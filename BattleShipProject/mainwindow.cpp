@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "dialognames.h"
-#include "dialog.h"
+#include "onenamedb.h"
+#include "twonamesdb.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,24 +15,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_pushButton_2_clicked()
 {
     if(ui->radioButton->isChecked()) {
 
-    Dialog d;
-    d.setModal(true);
-    d.exec();
+    OneNameDB ondb;
+    ondb.setModal(true);
+    ondb.exec();
     this->close();
     }
     else if(ui->radioButton_2->isChecked()) {
 
-     DialogNames dn;
-     dn.setModal(true);
-     dn.exec();
+     TwoNamesDB tndb;
+     tndb.setModal(true);
+     tndb.exec();
     this->close();
     }
-    else {
-this->close();
-    }
-
 }
