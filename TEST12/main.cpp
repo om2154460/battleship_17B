@@ -11,6 +11,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
 
 
 class Cell: public QWidget {
@@ -158,33 +159,35 @@ int y=1;
          AI(5,"Aircraft Carrier",false)};
 
     int aiCoords[5];
+    bool overlap = true;
+   // int x,y;
 
-       // DOESNT PREVENT SHIPS FROM OVERLAPPING, JUST FROM GOING OFF OF BOARD
+      while(overlap == true) {
 
-            for(int i=0;i<5;i++) {
+            for(int i=0;i<5;i++) { // ship1
                 if(i == 0) { // HORIZONTAL: restrict x
-                    int y = (rand()%9)*10;
-                    int x = rand()%8; //
+                     y = (rand()%9)*10;
+                     x = rand()%8; //
                     aiCoords[i] = y+x;
                 }
                 else if(i==1) { // VERTICAL: restrict y
-                    int y = (rand()%7)*10;
-                    int x = rand()%9;
+                     y = (rand()%7)*10;
+                     x = rand()%9;
                     aiCoords[i] = x+y;
                 }
                 else if(i==2) { // HORIZONTAL
-                    int y = (rand()%9)*10;
-                    int x = rand()%7;
+                    y = (rand()%9)*10;
+                     x = rand()%7;
                     aiCoords[i] = x+y;
                 }
                 else if(i==3) { // VERTICAL
-                    int y = (rand()%6)*10;
-                    int x = rand()%9;
+                    y = (rand()%6)*10;
+                    x = rand()%9;
                     aiCoords[i] = x+y;
                 }
                 else if(i==4) { // HORIZONTAL
-                    int y = (rand()%9)*10;
-                    int x = rand()%4+1;
+                     y = (rand()%9)*10;
+                     x = rand()%4+1;
                     aiCoords[i] = y+x;
                  }
             }
@@ -208,15 +211,26 @@ int y=1;
          ai[4].setAICoords(3,aiCoords[4]+3);
          ai[4].setAICoords(4,aiCoords[4]+4);
 
+         // REDO IF OVERLAP FOUND
 
+        ///////////// PUT ALL SHIP COORDS INTO 1 ARRAY ///////////////
+             int tCount = 0, p=0;;
+             int overlapTestArr[17];
+
+             for(int i=0; i<17; i++) {
+                if(i == 2 || i == 5 || i == 8 || i == 12) {
+                    tCount++;
+                    p=0;
+                }
+                overlapTestArr[i] = ai[tCount].getAICoords(p);
+                p++;
+             }
+
+            int* end = overlapTestArr + 17;
+            std::sort(overlapTestArr, end);
+            overlap = (std::unique(overlapTestArr, end) != end);
          ///////////////////////////////////////////////////////////////
-         // IN AICell CONSTRUCTOR:
-         /*  if() {
-         AIbutton->setStyleSheet("background-color: red");
-         }
-
-           */
-         ////////////////////////////////////////////////////////////////
+        }
 
     AICell *AIc;
     AIc = new AICell[100];
