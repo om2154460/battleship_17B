@@ -4,6 +4,9 @@
 #include <string>
 #include <ctype.h>
 #include "AI_Ship_Placer.h"
+#include <ctime>        // std::time
+#include <cstdlib>      // std::rand, std::srand
+#include <regex>
 
 using namespace std;
 
@@ -25,7 +28,7 @@ Game::Game()
 		pvpGame = false;
 	}
 
-	debugging = true;
+	debugging = false;
 }
 //Deconstructor
 Game::~Game()
@@ -69,13 +72,147 @@ void Game::setPlayerShips(){
 }
 //Player vs. Player game
 void Game::gamePVP(){
+	playerTurn = chooseTurn();
+	gameOver = false;
+	string attack;
+	Ship tempShip;
+	string temp;
+	string result;
+	string shipName;
+
+	playerTurn = chooseTurn();
+	if (playerTurn == 0)
+		playerNotTurn = 1;
+	else
+		playerNotTurn = 0;
+
+	while (!gameOver){
+		//Get Player attack
+		attack = getPlayerAttack(playerTurn);
+		//Check if hit or miss or sunk
+		temp = players[playerNotTurn].checkAttack(attack);
+		result = temp.substr(0,1);
+		//Tell the player what the result of his/her attack was
+		if (result == "0"){	//Miss
+			cout << attack << " was a miss." << endl;
+		}
+		else if (result == "1"){	//Ship was hit
+			cout << attack << " was a hit!" << endl;
+		}
+		else if (result == "2"){	//Ship was hit and sunk
+			shipName = temp.substr(1, temp.size() - 1);
+			cout << attack << " was a hit! " << shipName <<" was sunk!" << endl;
+		}
+
+		if (players[playerNotTurn].getShipsAlive() == 0){	//Other play no longer has any afloat ships
+			gameOver = true;	//Set GameOver to true to break out of while loop
+			continue;	//Skip turn switching, go to validation checking of the while loop
+		}
+			
+		//Switch turns
+		if (playerTurn == 0){
+			playerTurn = 1;
+			playerNotTurn = 0;
+		}
+			
+		else{
+			playerTurn = 0;
+			playerNotTurn = 1;
+		}
+			
+	}
+	cout << players[playerTurn].getName() << " won! Game Over." << endl;
 
 }
 //Player vs. Computer game
 void Game::gamePVC(){
+	playerTurn = chooseTurn();
+	gameOver = false;
+	string attack;
+	Ship tempShip;
+	string temp;
+	string result;
+	string shipName;
+	AI_Attack_Algorithm AI;
+
+	playerTurn = chooseTurn();
+	if (playerTurn == 0)
+		playerNotTurn = 1;
+	else
+		playerNotTurn = 0;
+
+	while (!gameOver){
+		result = "0";
+		if (playerTurn == 0){
+			//Get Player attack
+			attack = getPlayerAttack(playerTurn);
+			//Check if hit or miss or sunk
+			temp = players[playerNotTurn].checkAttack(attack);
+			result = temp.substr(0, 1);
+			//Tell the player what the result of his/her attack was
+			if (result == "0"){	//Miss
+				cout << attack << " was a miss." << endl;
+			}
+			else if (result == "1"){	//Ship was hit
+				cout << attack << " was a hit!" << endl;
+			}
+			else if (result == "2"){	//Ship was hit and sunk
+				shipName = temp.substr(1, temp.size() - 1);
+				cout << attack << " was a hit! " << shipName << " was sunk!" << endl;
+			}
+			if (players[playerNotTurn].getShipsAlive() == 0){	//Other play no longer has any afloat ships
+				gameOver = true;	//Set GameOver to true to break out of while loop
+				continue;	//Skip turn switching, go to validation checking of the while loop
+			}
+		}
+		else{
+			//Get Computer attack
+			attack = AI.moveAI();
+			cout << players[1].getName() << " fires at: " << attack << endl;
+			//Check if hit or miss or sunk
+			temp = players[playerNotTurn].checkAttack(attack);
+			//Break apart string for 0, 1, or 2 for miss, hit, sunk respectively
+			result = temp.substr(0, 1);
+			if (result == "0"){	//Miss
+				cout << attack << " was a miss." << endl;
+				AI.moveResult(false, false, 0);
+			}
+			else if (result == "1"){	//Ship was hit
+				cout << attack << " was a hit!" << endl;
+				AI.moveResult(true, false, 0);
+			}
+			else if (result == "2"){	//Ship was hit and sunk
+				shipName = temp.substr(1, temp.size() - 1);
+				cout << attack << " was a hit! " << shipName << " was sunk!" << endl;
+				AI.moveResult(true, true, shipName2Size(shipName));
+			}
+		}
+
+
+		//Switch turns
+		if (playerTurn == 0){
+			playerTurn = 1;
+			playerNotTurn = 0;
+		}
+
+		else{
+			playerTurn = 0;
+			playerNotTurn = 1;
+		}
+
+	}
+	cout << players[playerTurn].getName() << " won! Game Over." << endl;
 
 }
-
+//Play the game
+void Game::playGame(){
+	if (pvpGame){
+		gamePVP();
+	}
+	else if (pvcGame){
+		gamePVC();
+	}
+}
 int Game::shipName2Index(string name){
 	if (name == "CARRIER")	//Size 5
 		return 0;
@@ -325,9 +462,19 @@ void Game::shipPlacing(int numOfPlayers){
 		int i = 0;
 		while (i != 5){
 			cout << "Enter starting coordinate for your " << index2ShipName(i) << " (" << shipName2Size(index2ShipName(i)) << "): ";
-			cin >> holdStr;
+			if (debugging)
+			holdStr = fillShipsCoorDebug(i);
+			else
+				cin >> holdStr;
+			if (!checkCoordinate(holdStr)){
+				cout << "Coordinate is not in the proper format. Ex: A1. Try Again..." << endl;
+				continue;
+			}
 			cout << "Enter the direction (D or R) for your " << index2ShipName(i) << " (" << shipName2Size(index2ShipName(i)) << "): ";
-			cin >> holdChar;
+			if (debugging)
+				holdChar = fillShipsDirectDebug();
+			else
+				cin >> holdChar;
 			//Fill a temporay ship instance
 			tempShip = fillShip(index2ShipName(i), holdStr, holdChar);
 			//Check that the ship was placed okay
@@ -395,4 +542,70 @@ void Game::aiShipPlacer(){
 		}
 	}
 
+}
+//Randomly choose a player to start the game (returns 0 or 1)
+int Game::chooseTurn(){
+	//Initialize the random seed
+	std::srand(unsigned(std::time(NULL)));
+	//Generate a random number between 0 and 1
+	int randomNum = rand() % 100 + 1;
+	int remainder = randomNum % 2;
+	//Convert random Number into a direction
+	if (remainder == 0){
+		return 0;	//Player One is choosen
+	}
+	else{
+		return 1;	//Player 2 is choosen
+	}
+}
+//Get player attack Coordinate
+string Game::getPlayerAttack(int index){
+	string attack;
+	bool attackOK = false;
+	regex reg("^\s*([A-J])(([1][0])|([1-9]))\s*$");	//Regualr expression!!!
+	smatch match;
+	while (!attackOK){
+		//Get the coordiante that the player wishes to attack
+		cout << players[index].getName() << " enter your attack: ";
+		cin >> attack;
+		//Check that the coordinate is in the proper format Ex: A10
+		if (checkCoordinate(attack)){
+			//Add the coordinate to the player's move list
+			attackOK = players[index].addMove(attack);
+		}
+		else{
+			cout << attack << " is not in the proper format. Try Again.." << endl;
+			continue;
+		}
+		//If the move is valid break out of loop
+		if (!attackOK){
+			cout << attack << " has already been used. Try a different coordinate" << endl;
+		}
+
+	}
+
+	return attack;
+}
+//Uses regular expressions to check that the coordinate is in the proper format.
+bool Game::checkCoordinate(string coordinate){
+	regex reg("^\s*([A-J])(([1][0])|([1-9]))\s*$");
+	if (regex_search(coordinate, reg)){
+		//Add the coordinate to the player's move list
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+string Game::fillShipsCoorDebug(int index){
+	switch (index){
+	case 0: return "A1";
+	case 1: return "B1";
+	case 2: return "C1";
+	case 3: return "D1";
+	case 4: return "E1";
+	}
+}
+char Game::fillShipsDirectDebug(){
+	return 'R';
 }

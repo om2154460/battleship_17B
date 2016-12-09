@@ -5,6 +5,7 @@
 #include <iostream>
 #include <time.h>
 #include <algorithm>    // std::random_shuffle
+#include <Windows.h>
 
 using namespace std;
 //Constructor
@@ -320,9 +321,14 @@ string AI_Ship_Placer::num2Coordinate(int number){
 vector<char> AI_Ship_Placer::getRandomDirections(){
 	vector<char> directions;
 	char direction;
+
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	std::srand(unsigned(st.wMilliseconds));
+	// then convert st to your precision needs
 	for (int i = 0; i < 5; i++){
 		//Initialize the random seed
-		std::srand(unsigned(std::time(NULL)));
+		//std::srand(unsigned(std::time(NULL)));
 		//Generate a random number between 0 and 1
 		int randomNum = rand() % 100 + 1;
 		int remainder = randomNum % 2;
@@ -644,7 +650,10 @@ vector<string> AI_Ship_Placer::randomCoordinates(){
 		randArray[i] = i;
 	}
 	//Randomize the randArray
-	std::srand(unsigned(std::time(NULL)));   //So that cards are actually random for every game.
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	std::srand(unsigned(st.wMilliseconds));
+	//std::srand(unsigned(std::time(NULL)));   //So that cards are actually random for every game.
 	std::random_shuffle(&randArray[0], &randArray[coordinates.size() - 1]);
 	//Randomize Possible Moves Vector using the randomized array
 	for (int i = 0; i < coordinates.size(); i++){
@@ -654,7 +663,7 @@ vector<string> AI_Ship_Placer::randomCoordinates(){
 	//Switch last coordinate in Possible Move List with another coordinate based on randomNum that was generated.
 	//This is needed because the random_shuffle function does not change the last instance of array
 	//Initialize the random seed
-	std::srand(unsigned(std::time(NULL)));
+	//std::srand(unsigned(std::time(NULL)));
 	//Generate a random number between 0 and 99
 	int randomNum = rand() % 99 + 0;
 	//Do the swap!

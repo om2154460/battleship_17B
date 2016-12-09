@@ -1,9 +1,33 @@
-﻿Build started 12/4/2016 2:31:48 PM.
+﻿Build started 12/8/2016 6:45:37 PM.
      1>Project "C:\Users\Brandon\documents\visual studio 2013\Projects\BattleShip_PlayerVsAI_Visual_Console\BattleShip_PlayerVsAI_Visual_Console\BattleShip_PlayerVsAI_Visual_Console.vcxproj" on node 2 (Build target(s)).
-     1>Link:
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\BattleShip_PlayerVsAI_Visual_Console.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp
+         Game.cpp
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(283): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(492): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(506): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(513): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(565): warning C4129: 's' : unrecognized character escape sequence
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(591): warning C4129: 's' : unrecognized character escape sequence
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(237): warning C4715: 'Game::index2ShipName' : not all control paths return a value
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(227): warning C4715: 'Game::shipName2Index' : not all control paths return a value
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(250): warning C4715: 'Game::shipName2Size' : not all control paths return a value
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(399): warning C4715: 'Game::strLetter2Num' : not all control paths return a value
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(415): warning C4715: 'Game::num2StrLetter' : not all control paths return a value
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(435): warning C4715: 'Game::strNum2Num' : not all control paths return a value
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(451): warning C4715: 'Game::intNum2StrNum' : not all control paths return a value
+     1>c:\users\brandon\documents\visual studio 2013\projects\battleship_playervsai_visual_console\battleship_playervsai_visual_console\game.cpp(608): warning C4715: 'Game::fillShipsCoorDebug' : not all control paths return a value
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Brandon\documents\visual studio 2013\Projects\BattleShip_PlayerVsAI_Visual_Console\Debug\BattleShip_PlayerVsAI_Visual_Console.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Brandon\documents\visual studio 2013\Projects\BattleShip_PlayerVsAI_Visual_Console\Debug\BattleShip_PlayerVsAI_Visual_Console.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Brandon\documents\visual studio 2013\Projects\BattleShip_PlayerVsAI_Visual_Console\Debug\BattleShip_PlayerVsAI_Visual_Console.lib" /MACHINE:X86 Debug\AI_Attack_Algorithm.obj
+         Debug\AI_Ship_Placer.obj
+         Debug\BattleShip_PlayerVsAI_Visual_Console.obj
+         Debug\Game.obj
+         Debug\Player.obj
+         Debug\Ship.obj
+         Debug\stdafx.obj
          BattleShip_PlayerVsAI_Visual_Console.vcxproj -> C:\Users\Brandon\documents\visual studio 2013\Projects\BattleShip_PlayerVsAI_Visual_Console\Debug\BattleShip_PlayerVsAI_Visual_Console.exe
      1>Done Building Project "C:\Users\Brandon\documents\visual studio 2013\Projects\BattleShip_PlayerVsAI_Visual_Console\BattleShip_PlayerVsAI_Visual_Console\BattleShip_PlayerVsAI_Visual_Console.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.48
+Time Elapsed 00:00:01.31

@@ -135,4 +135,5 @@ void testGame(){
 	Game game;
 	game.setPlayerNames();
 	game.setPlayerShips();
+	game.playGame();
 }

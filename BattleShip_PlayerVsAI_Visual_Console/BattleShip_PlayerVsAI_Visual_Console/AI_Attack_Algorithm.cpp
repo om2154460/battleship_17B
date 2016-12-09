@@ -9,6 +9,7 @@
 #include <ctime>        // std::time
 #include <cstdlib>      // std::rand, std::srand
 #include <string>       //std::to_string()
+#include <windows.h>
 using namespace std;
 
 
@@ -23,7 +24,9 @@ AI_Attack_Algorithm::AI_Attack_Algorithm() {
 	//Randomize move possible move list
 	randomizeMoves();
 	//Set debugging to true for debugging output
-	debugging = true;
+	debugging = false;
+	//Delay else there isnt enough time between the random seeds for it it to come up with the a different list
+	//Sleep(1000);	//Future fix is to do the random seed with milliseconds and not seconds
 
 }
 //Destructor
@@ -59,7 +62,11 @@ void AI_Attack_Algorithm::randomizeMoves(){
 		randArray[i] = i;
 	}
 	//Randomize the randArray
-	std::srand(unsigned(std::time(NULL)));   //So that cards are actually random for every game.
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	//Millisecond percision is needed because the computer runs other function with random seed so fast
+	std::srand(unsigned(st.wMilliseconds));	//So that cards are actually random for every game.
+	//std::srand(unsigned(std::time(NULL)));   //So that cards are actually random for every game.
 	std::random_shuffle(&randArray[0], &randArray[possMoves.size() - 1]);
 	//Randomize Possible Moves Vector using the randomized array
 	for (int i = 0; i < possMoves.size(); i++){
@@ -293,7 +300,7 @@ string AI_Attack_Algorithm::moveAI(){
 		randomFire();
 		break;
 	}
-	case 1:{    //New Ship found, create direction list
+	case 1:{    //New Ship found, try a direction
 		//Set direction to popped off direction from possible direction vector
 		direction = possDirect.back();
 		if (debugging){ cout << "Direction: " << direction << endl; }

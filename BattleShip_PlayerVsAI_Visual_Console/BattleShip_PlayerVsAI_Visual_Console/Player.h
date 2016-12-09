@@ -20,13 +20,15 @@ public:
 	bool addMove(string coordinate);
 	string getName(){ return playerName; }
 	void setName(string name){ playerName = name; }
+	string checkAttack(string attack);
+	int getShipsAlive(){ return shipsAlive; }
 private:
 	vector<Ship> ships1;	//Every player has 5 ships
 	vector<string> moveList;
 	Ship ships[5];
-	string playerName;
-
+	int shipsAlive;
+	string playerName;	
 	int shipName2Index(string name);
-
+	string index2ShipName(int index);
 };
 

@@ -16,6 +16,7 @@ public:
 	void setPlayerShips();	//Set player and Computer ships
 	void gamePVP();	//Player vs. Player game
 	void gamePVC();	//Player vs. Computer game
+	void Game::playGame();	//Play the game
 
 
 private:
@@ -23,6 +24,9 @@ private:
 	vector<Player> players;
 	bool pvpGame;
 	bool pvcGame;
+	int playerTurn;
+	int playerNotTurn;
+	bool gameOver;
 	AI_Attack_Algorithm AI;
 
 	int shipName2Index(string name);
@@ -39,5 +43,12 @@ private:
 	string intNum2StrNum(int num);
 	void shipPlacing(int numOfPlayers);
 	void aiShipPlacer();
+	int chooseTurn();
+	string getPlayerAttack(int index);
+	bool checkCoordinate(string coordinate);
+
+	//For debugging
+	string fillShipsCoorDebug(int index);
+	char fillShipsDirectDebug();
 };
 
