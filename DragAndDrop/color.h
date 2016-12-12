@@ -23,6 +23,7 @@ public:
     int getWidth(){return width;}
     int getHeight(){return height;}
 
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
