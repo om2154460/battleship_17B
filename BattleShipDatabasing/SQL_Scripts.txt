@@ -1,0 +1,39 @@
+//SQL Scripts
+
+//Create Schema in Database
+CREATE SCHEMA `battleship` ;
+
+//Create Player Table
+CREATE TABLE `battleship`.`players` (
+  `PlayerID` INT NOT NULL AUTO_INCREMENT,
+  `UserName` VARCHAR(45) NOT NULL,
+  `Password` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`PlayerID`, `UserName`));
+
+ //Create Game Table
+ CREATE TABLE `battleship`.`games` (
+  `ColumnID` INT NOT NULL AUTO_INCREMENT,
+  `GameName` VARCHAR(45) NOT NULL,
+  `DateCreated` DATE NOT NULL,
+  `Player1` VARCHAR(45) NOT NULL,
+  `Player2` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`ColumnID`, `GameName`));
+
+ //Create Message Table
+ CREATE TABLE `battleship`.`messages` (
+  `MessageID` INT NOT NULL AUTO_INCREMENT,
+  `Message` VARCHAR(45) NULL,
+  `UserName` VARCHAR(45) NOT NULL,
+  `DateTime` DATETIME NOT NULL,
+  `Game` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`MessageID`));
+
+//Create Move Table
+CREATE TABLE `battleship`.`moves` (
+  `MoveID` INT NOT NULL AUTO_INCREMENT,
+  `Move` VARCHAR(5) NOT NULL,
+  `UserName` VARCHAR(45) NOT NULL,
+  `GameName` VARCHAR(45) NOT NULL,
+  `TimeDate` DATETIME NOT NULL,
+  PRIMARY KEY (`MoveID`));
+  
