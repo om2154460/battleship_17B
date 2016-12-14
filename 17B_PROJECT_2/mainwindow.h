@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include <vector>
 
 namespace Ui {
 class MainWindow;
@@ -34,8 +35,11 @@ private:
     Ui::MainWindow *ui;
     int numDrops;
     int firstCoordArr[5];
+    //int coordTestArr[17];
+    std::vector<int> coordTestVec;
     int patrol[2],destroyer[3],submarine[3];
     int battleship[4], aircraftCarrier[5];
+    bool overlap;
     QPushButton *cells[100];
 };
 

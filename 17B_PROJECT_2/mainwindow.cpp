@@ -13,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Scramble Your Fleet");
 
+    ui->label_3->setText("<font color='red'>Coordinates may not overlap, click Reset</font>");
+    ui->label_3->setVisible(false);
+
     ui->pushButton_3->setEnabled(false);
 
     QButtonGroup bg;
@@ -90,7 +93,7 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked() {
+void MainWindow::on_pushButton_clicked() { // Play button
     qDebug() << firstCoordArr[0] << " "  << firstCoordArr[1] << " "  << firstCoordArr[2] << " "  << firstCoordArr[3] << " " << firstCoordArr[4];
     qDebug() << patrol[0] << " " << patrol[1];
     qDebug() << destroyer[0] << " " << destroyer[1] << " " << destroyer[2];
@@ -103,115 +106,221 @@ void MainWindow::on_pushButton_clicked() {
     //this->close(); // will open game window later
 }
 
-void MainWindow::on_pushButton_2_clicked() {
+void MainWindow::on_pushButton_2_clicked() { // Reset button
     for(int i=0;i<100;i++) {
         cells[i]->setStyleSheet("");
+        cells[i]->setEnabled(true);
     }
     numDrops=0;
     ui->label->setVisible(false);
-    ui->pushButton->setEnabled(false);
     ui->label_2->setText("Click Your Patrol Boat");
+    ui->label_3->setVisible(false);
+    ui->radioButton->setEnabled(true);
+    ui->radioButton_2->setEnabled(true);
+   // patrol[0] = 0;
+   // patrol[1] = 0;
+
 }
 
-void MainWindow::on_pushButton_3_clicked() {
-
-
-
+void MainWindow::on_pushButton_3_clicked() { // 1 at a time
 /////////////////////////// FILL SHIP COORDINATE ARRAYS -> ///////////////////////
+overlap = false;
 
     if(numDrops == 1) {
 
          patrol[0] = firstCoordArr[0];
 
         if(ui->radioButton->isChecked()) { // Horizontal
-            /*if() { // check if coordinates are possible
+            if(firstCoordArr[0]%10 >=9) {patrol[1] = firstCoordArr[0]-1; } // check if coordinates are possible
+            else { patrol[1] = firstCoordArr[0]+1; }
 
-            }*/
-            patrol[1] = firstCoordArr[0]+1;
         }
         else {                             // Vertical
-            patrol[1] = firstCoordArr[0]+10;
+           if(firstCoordArr[0] >= 90) {patrol[1] = firstCoordArr[0]-10; }
+            else { patrol[1] = firstCoordArr[0]+10; }
         }
+
+        cells[patrol[1]]->setStyleSheet("background-color: black");
+
+        coordTestVec.push_back(patrol[0]);
+        coordTestVec.push_back(patrol[1]);
 
     }
-    if(numDrops == 2 || numDrops == 3) {
 
         if(numDrops == 2) {
-        destroyer[0] = firstCoordArr[1];
+            destroyer[0] = firstCoordArr[1];
             if(ui->radioButton->isChecked()) { // Horizontal
-                /* if() { // check if coordinates are possible
+                 if(firstCoordArr[1]%10 == 9) { destroyer[1] = firstCoordArr[1]-1;
+                     destroyer[2] = firstCoordArr[1]-2; }
+                 else {destroyer[1] = firstCoordArr[1]+1;
+                     destroyer[2] = firstCoordArr[1]+2; }
 
-                }*/
-                destroyer[1] = firstCoordArr[1]+1;
-                destroyer[2] = firstCoordArr[1]+2;
+
         }
         else {                             // Vertical
-            destroyer[1] = firstCoordArr[1]+10;
-            destroyer[2] = firstCoordArr[1]+20;
+            if(firstCoordArr[1] >= 80) {destroyer[1] = firstCoordArr[1]-10;
+                destroyer[2] = firstCoordArr[1]-20;}
+            else {destroyer[1] = firstCoordArr[1]+10;
+                destroyer[2] = firstCoordArr[1]+20; }
         }
+            cells[destroyer[1]]->setStyleSheet("background-color: black");
+            cells[destroyer[2]]->setStyleSheet("background-color: black");
+
+            for(int i=0;i<coordTestVec.size();i++) {
+                if(coordTestVec[i] == destroyer[0] || coordTestVec[i] == destroyer[1] || coordTestVec[i] == destroyer[2]) {
+                 overlap = true;
+                }
+            }
+
+
+            coordTestVec.push_back(destroyer[0]);
+            coordTestVec.push_back(destroyer[1]);
+            coordTestVec.push_back(destroyer[2]);
+
+
+
         }
+
+
+
+      if(overlap == false) {
+
         if(numDrops == 3) {
             submarine[0] = firstCoordArr[2];
             if(ui->radioButton->isChecked()) { // Horizontal
-                /* if() { // check if coordinates are possible
+                if(firstCoordArr[2]%10 >= 8) { submarine[1] = firstCoordArr[2]-1;
+                    submarine[2] = firstCoordArr[2]-2; }
+                else {submarine[1] = firstCoordArr[2]+1;
+                    submarine[2] = firstCoordArr[2]+2; }
 
-                }*/
-                submarine[1] = firstCoordArr[2]+1;
-                submarine[2] = firstCoordArr[2]+2;
         }
-        else {                             // Vertical
-            submarine[1] = firstCoordArr[2]+10;
-            submarine[2] = firstCoordArr[2]+20;
+        else {                                    // Vertical
+                if(firstCoordArr[2] >= 79) {submarine[1] = firstCoordArr[2]-10;
+                    submarine[2] = firstCoordArr[2]-20;}
+                else {submarine[1] = firstCoordArr[2]+10;
+                       submarine[2] = firstCoordArr[2]+20; }
         }
+            cells[submarine[1]]->setStyleSheet("background-color: black");
+            cells[submarine[2]]->setStyleSheet("background-color: black");
+
+            for(int i=0;i<coordTestVec.size();i++) {
+                if(coordTestVec[i] == submarine[0] || coordTestVec[i] == submarine[1] || coordTestVec[i] == submarine[2]) {
+                 overlap = true;
+                }
+            }
+
+
+            coordTestVec.push_back(submarine[0]);
+            coordTestVec.push_back(submarine[1]);
+            coordTestVec.push_back(submarine[2]);
+
         }
 
+}
 
-
-    }
+if(overlap == false) {
 
     if(numDrops == 4) {
 
         battleship[0] = firstCoordArr[3];
 
         if(ui->radioButton->isChecked()) { // Horizontal
-           /* if() { // check if coordinates are  possible
-
-            }*/
-            battleship[1] = firstCoordArr[3]+1;
-            battleship[2] = firstCoordArr[3]+2;
-            battleship[3] = firstCoordArr[3]+3;
+            if(firstCoordArr[3]%10 > 6) { battleship[1] = firstCoordArr[3]-1;
+                battleship[2] = firstCoordArr[3]-2;
+                battleship[3] = firstCoordArr[3]-3;}
+            else {battleship[1] = firstCoordArr[3]+1;
+                battleship[2] = firstCoordArr[3]+2;
+                battleship[3] = firstCoordArr[3]+3;}
 
         }
-        else {                             // Vertical
-            battleship[1] = firstCoordArr[3]+10;
-            battleship[2] = firstCoordArr[3]+20;
-            battleship[3] = firstCoordArr[3]+30;
+        else {                            // Vertical
+            if(firstCoordArr[3] >= 69) {battleship[1] = firstCoordArr[3]-10;
+                battleship[2] = firstCoordArr[3]-20;
+                 battleship[3] = firstCoordArr[3]-30;}
+            else { battleship[1] = firstCoordArr[3]+10;
+                   battleship[2] = firstCoordArr[3]+20;
+                   battleship[3] = firstCoordArr[3]+30;}
+        }
+        cells[battleship[1]]->setStyleSheet("background-color: black");
+        cells[battleship[2]]->setStyleSheet("background-color: black");
+        cells[battleship[3]]->setStyleSheet("background-color: black");
+
+        for(int i=0;i<coordTestVec.size();i++) {
+            if(coordTestVec[i] == battleship[0] || coordTestVec[i] == battleship[1]
+                    || coordTestVec[i] == battleship[2] || coordTestVec[i] == battleship[3]) {
+             overlap = true;
+            }
         }
 
+        coordTestVec.push_back(battleship[0]);
+        coordTestVec.push_back(battleship[1]);
+        coordTestVec.push_back(battleship[2]);
+        coordTestVec.push_back(battleship[3]);
 
     }
+
+}
+
+if(overlap == false) {
     if(numDrops == 5) {
 
          aircraftCarrier[0] = firstCoordArr[4];
 
         if(ui->radioButton->isChecked()) { // Horizontal
-           /* if() { // check if coordinates are  possible
-
-            }*/
-           aircraftCarrier[1] = firstCoordArr[4]+1;
-           aircraftCarrier[2] = firstCoordArr[4]+2;
-           aircraftCarrier[3] = firstCoordArr[4]+3;
-           aircraftCarrier[4] = firstCoordArr[4]+4;
+            if(firstCoordArr[4]%10 >= 5 ) { aircraftCarrier[1] = firstCoordArr[4]-1;
+                aircraftCarrier[2] = firstCoordArr[4]-2;
+                aircraftCarrier[3] = firstCoordArr[4]-3;
+                aircraftCarrier[4] = firstCoordArr[4]-4;
+            }
+            else {aircraftCarrier[1] = firstCoordArr[4]+1;
+                aircraftCarrier[2] = firstCoordArr[4]+2;
+                aircraftCarrier[3] = firstCoordArr[4]+3;
+                aircraftCarrier[4] = firstCoordArr[4]+4;
+            }
         }
         else {                             // Vertical
-            aircraftCarrier[1] = firstCoordArr[4]+10;
-            aircraftCarrier[2] = firstCoordArr[4]+20;
-            aircraftCarrier[3] = firstCoordArr[4]+30;
-            aircraftCarrier[4] = firstCoordArr[4]+40;
+            if(firstCoordArr[4] >= 49) {aircraftCarrier[1] = firstCoordArr[4]-10;
+                            aircraftCarrier[2] = firstCoordArr[4]-20;
+                            aircraftCarrier[3] = firstCoordArr[4]-30;
+                            aircraftCarrier[4] = firstCoordArr[4]-40;
+                        }
+                        else {aircraftCarrier[1] = firstCoordArr[4]+10;
+                            aircraftCarrier[2] = firstCoordArr[4]+20;
+                            aircraftCarrier[3] = firstCoordArr[4]+30;
+                            aircraftCarrier[4] = firstCoordArr[4]+40;
+                        }
         }
 
+        cells[aircraftCarrier[1]]->setStyleSheet("background-color: black");
+        cells[aircraftCarrier[2]]->setStyleSheet("background-color: black");
+        cells[aircraftCarrier[3]]->setStyleSheet("background-color: black");
+        cells[aircraftCarrier[4]]->setStyleSheet("background-color: black");
 
+        for(int i=0;i<coordTestVec.size();i++) {
+            if(coordTestVec[i] == aircraftCarrier[0] || coordTestVec[i] == aircraftCarrier[1]
+                    || coordTestVec[i] == aircraftCarrier[2] || coordTestVec[i] == aircraftCarrier[3]
+                    || coordTestVec[i] == aircraftCarrier[4]) {
+             overlap = true;
+            }
+        }
+
+        coordTestVec.push_back(aircraftCarrier[0]);
+        coordTestVec.push_back(aircraftCarrier[1]);
+        coordTestVec.push_back(aircraftCarrier[2]);
+        coordTestVec.push_back(aircraftCarrier[3]);
+        coordTestVec.push_back(aircraftCarrier[4]);
     }
+
+}
+
+if(overlap == true) {
+    ui->label_3->setVisible(true);
+    ui->radioButton->setEnabled(false);
+    ui->radioButton_2->setEnabled(false);
+    for(int i=0;i<100;i++) {
+        cells[i]->setEnabled(false);
+    }
+}
 ///////////////////////////  <- END FILL SHIP COORDINATE ARRAYS ///////////////////////
 
 
@@ -222,8 +331,10 @@ void MainWindow::on_pushButton_3_clicked() {
     ui->radioButton->setAutoExclusive(true);
     ui->radioButton_2->setAutoExclusive(true);
 
-    for(int i=0;i<100;i++) {
-        cells[i]->setEnabled(true);
+    if(overlap == false) {
+         for(int i=0;i<100;i++) {
+            cells[i]->setEnabled(true);
+        }
     }
 
     if(numDrops == 1) {
@@ -240,6 +351,11 @@ void MainWindow::on_pushButton_3_clicked() {
     }
     else if(numDrops == 5) {
         ui->label_2->setText("Ships Have Been Set");
+        ui->radioButton->setEnabled(false);
+        ui->radioButton_2->setEnabled(false);
+        for(int i=0;i<100;i++) {
+            cells[i]->setEnabled(false);
+        }
     }
 
     if(numDrops>=5) {
