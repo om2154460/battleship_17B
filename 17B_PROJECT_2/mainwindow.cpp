@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <game.h>
+
 #include <QStyle>
 #include <QPixmap>
 #include <QButtonGroup>
@@ -94,16 +96,19 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_pushButton_clicked() { // Play button
-    qDebug() << firstCoordArr[0] << " "  << firstCoordArr[1] << " "  << firstCoordArr[2] << " "  << firstCoordArr[3] << " " << firstCoordArr[4];
+   Game g;
+    g.setModal(true);
+    g.exec();
+    this->close();
+
+    /*qDebug() << firstCoordArr[0] << " "  << firstCoordArr[1] << " "  << firstCoordArr[2] << " "  << firstCoordArr[3] << " " << firstCoordArr[4];
     qDebug() << patrol[0] << " " << patrol[1];
     qDebug() << destroyer[0] << " " << destroyer[1] << " " << destroyer[2];
     qDebug() << submarine[0] << " " << submarine[1] << " " << submarine[2];
     qDebug() << battleship[0] << " " << battleship[1] << " " << battleship[2] << " " << battleship[3];
     qDebug() << aircraftCarrier[0] << " " << aircraftCarrier[1] << " " << aircraftCarrier[2] << " " << aircraftCarrier[3] << " " << aircraftCarrier[4];
+*/
 
-
-
-    //this->close(); // will open game window later
 }
 
 void MainWindow::on_pushButton_2_clicked() { // Reset button

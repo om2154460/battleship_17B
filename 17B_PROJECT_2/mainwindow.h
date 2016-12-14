@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <game.h>
+
 #include <QMainWindow>
 #include <QPushButton>
 #include <vector>
@@ -12,10 +14,12 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+friend class Game;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+int patrol[2],destroyer[3],submarine[3];
+int battleship[4], aircraftCarrier[5];
 
 public slots:
     void handleButton();
@@ -37,8 +41,6 @@ private:
     int firstCoordArr[5];
     //int coordTestArr[17];
     std::vector<int> coordTestVec;
-    int patrol[2],destroyer[3],submarine[3];
-    int battleship[4], aircraftCarrier[5];
     bool overlap;
     QPushButton *cells[100];
 };
