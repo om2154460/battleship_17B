@@ -42,13 +42,11 @@ ui->label->setVisible(false);
         for(int row=0;row<10;row++) {
             index = (row*10)+col;
             cells[index] = new QPushButton;
-            cells[index]->setObjectName(QString::number(index));
+            cells[index]->setObjectName("p" + QString::number(index));
             ui->gridLayout->addWidget(cells[(row*10)+col],row,col);
             QObject::connect(cells[index],SIGNAL(released()),this,SLOT(handleButton()));
         }
     }
-
-    ui->gridLayout->setSpacing(0);
 
     // Vertical spacers
     ui->gridLayout->addItem(new QSpacerItem(20,40,QSizePolicy::Minimum,QSizePolicy::Expanding),0,0,1,dim+2);
@@ -120,7 +118,7 @@ void MainWindow::on_pushButton_2_clicked() { // Reset button
     }
     numDrops=0;
     ui->label->setVisible(false);
-    ui->label_2->setText("Click Your Patrol Boat (2)");
+    ui->label_2->setText("Click Your Patrol Boat");
     ui->label_3->setVisible(false);
     ui->radioButton->setEnabled(true);
     ui->radioButton_2->setEnabled(true);
@@ -173,7 +171,7 @@ overlap = false;
             cells[destroyer[1]]->setStyleSheet("background-color: black");
             cells[destroyer[2]]->setStyleSheet("background-color: black");
 
-            for(int i=0;i<signed(coordTestVec.size());i++) {
+            for(int i=0;i<coordTestVec.size();i++) {
                 if(coordTestVec[i] == destroyer[0] || coordTestVec[i] == destroyer[1] || coordTestVec[i] == destroyer[2]) {
                  overlap = true;
                 }
@@ -210,7 +208,7 @@ overlap = false;
             cells[submarine[1]]->setStyleSheet("background-color: black");
             cells[submarine[2]]->setStyleSheet("background-color: black");
 
-            for(int i=0;i<signed(coordTestVec.size());i++) {
+            for(int i=0;i<coordTestVec.size();i++) {
                 if(coordTestVec[i] == submarine[0] || coordTestVec[i] == submarine[1] || coordTestVec[i] == submarine[2]) {
                  overlap = true;
                 }
@@ -252,7 +250,7 @@ if(overlap == false) {
         cells[battleship[2]]->setStyleSheet("background-color: black");
         cells[battleship[3]]->setStyleSheet("background-color: black");
 
-        for(int i=0;i<signed(coordTestVec.size());i++) {
+        for(int i=0;i<coordTestVec.size();i++) {
             if(coordTestVec[i] == battleship[0] || coordTestVec[i] == battleship[1]
                     || coordTestVec[i] == battleship[2] || coordTestVec[i] == battleship[3]) {
              overlap = true;
@@ -303,7 +301,7 @@ if(overlap == false) {
         cells[aircraftCarrier[3]]->setStyleSheet("background-color: black");
         cells[aircraftCarrier[4]]->setStyleSheet("background-color: black");
 
-        for(int i=0;i<signed(coordTestVec.size());i++) {
+        for(int i=0;i<coordTestVec.size();i++) {
             if(coordTestVec[i] == aircraftCarrier[0] || coordTestVec[i] == aircraftCarrier[1]
                     || coordTestVec[i] == aircraftCarrier[2] || coordTestVec[i] == aircraftCarrier[3]
                     || coordTestVec[i] == aircraftCarrier[4]) {
@@ -345,16 +343,16 @@ if(overlap == true) {
     }
 
     if(numDrops == 1) {
-        ui->label_2->setText("Click Destroyer Coordinate (3)");
+        ui->label_2->setText("Click Destroyer Coordinate");
     }
     else if(numDrops == 2) {
-        ui->label_2->setText("Click Submarine Coordinate (3)");
+        ui->label_2->setText("Click Submarine Coordinate");
     }
     else if(numDrops == 3) {
-        ui->label_2->setText("Click Battleship Coordinate (4)");
+        ui->label_2->setText("Click Battleship Coordinate");
     }
     else if(numDrops == 4) {
-        ui->label_2->setText("Click Aircraft Carrier Coordinate (5)");
+        ui->label_2->setText("Click Aircraft Carrier Coordinate");
     }
     else if(numDrops == 5) {
         ui->label_2->setText("Ships Have Been Set");
