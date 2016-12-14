@@ -3,6 +3,7 @@
 #include <QStyle>
 #include <QPixmap>
 #include <QButtonGroup>
+#include <QDebug>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -36,6 +37,7 @@ ui->label->setVisible(false);
         for(int row=0;row<10;row++) {
             index = (row*10)+col;
             cells[index] = new QPushButton;
+            cells[index]->setObjectName("p" + QString::number(index));
             ui->gridLayout->addWidget(cells[(row*10)+col],row,col);
             QObject::connect(cells[index],SIGNAL(released()),this,SLOT(handleButton()));
         }
@@ -61,6 +63,7 @@ void MainWindow::handleButton() {
         cnt++;
     }
 
+qDebug() << "count: " << cnt;
 
     if(numDrops == 1) {
         firstCoordArr[0] = cnt;
@@ -88,7 +91,16 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_pushButton_clicked() {
-    this->close(); // will open game window later
+    qDebug() << firstCoordArr[0] << " "  << firstCoordArr[1] << " "  << firstCoordArr[2] << " "  << firstCoordArr[3] << " " << firstCoordArr[4];
+    qDebug() << patrol[0] << " " << patrol[1];
+    qDebug() << destroyer[0] << " " << destroyer[1] << " " << destroyer[2];
+    qDebug() << submarine[0] << " " << submarine[1] << " " << submarine[2];
+    qDebug() << battleship[0] << " " << battleship[1] << " " << battleship[2] << " " << battleship[3];
+    qDebug() << aircraftCarrier[0] << " " << aircraftCarrier[1] << " " << aircraftCarrier[2] << " " << aircraftCarrier[3] << " " << aircraftCarrier[4];
+
+
+
+    //this->close(); // will open game window later
 }
 
 void MainWindow::on_pushButton_2_clicked() {
@@ -105,44 +117,102 @@ void MainWindow::on_pushButton_3_clicked() {
 
 
 
-
+/////////////////////////// FILL SHIP COORDINATE ARRAYS -> ///////////////////////
 
     if(numDrops == 1) {
+
+         patrol[0] = firstCoordArr[0];
+
         if(ui->radioButton->isChecked()) { // Horizontal
             /*if() { // check if coordinates are possible
 
             }*/
-
+            patrol[1] = firstCoordArr[0]+1;
         }
         else {                             // Vertical
-
+            patrol[1] = firstCoordArr[0]+10;
         }
 
     }
     if(numDrops == 2 || numDrops == 3) {
-        if(ui->radioButton->isChecked()) { // Horizontal
-           /* if() { // check if coordinates are possible
 
-            }*/
+        if(numDrops == 2) {
+        destroyer[0] = firstCoordArr[1];
+            if(ui->radioButton->isChecked()) { // Horizontal
+                /* if() { // check if coordinates are possible
+
+                }*/
+                destroyer[1] = firstCoordArr[1]+1;
+                destroyer[2] = firstCoordArr[1]+2;
         }
         else {                             // Vertical
-
+            destroyer[1] = firstCoordArr[1]+10;
+            destroyer[2] = firstCoordArr[1]+20;
         }
+        }
+        if(numDrops == 3) {
+            submarine[0] = firstCoordArr[2];
+            if(ui->radioButton->isChecked()) { // Horizontal
+                /* if() { // check if coordinates are possible
+
+                }*/
+                submarine[1] = firstCoordArr[2]+1;
+                submarine[2] = firstCoordArr[2]+2;
+        }
+        else {                             // Vertical
+            submarine[1] = firstCoordArr[2]+10;
+            submarine[2] = firstCoordArr[2]+20;
+        }
+        }
+
+
 
     }
 
     if(numDrops == 4) {
+
+        battleship[0] = firstCoordArr[3];
+
         if(ui->radioButton->isChecked()) { // Horizontal
            /* if() { // check if coordinates are  possible
 
             }*/
+            battleship[1] = firstCoordArr[3]+1;
+            battleship[2] = firstCoordArr[3]+2;
+            battleship[3] = firstCoordArr[3]+3;
+
         }
         else {                             // Vertical
-
+            battleship[1] = firstCoordArr[3]+10;
+            battleship[2] = firstCoordArr[3]+20;
+            battleship[3] = firstCoordArr[3]+30;
         }
 
-    }
 
+    }
+    if(numDrops == 5) {
+
+         aircraftCarrier[0] = firstCoordArr[4];
+
+        if(ui->radioButton->isChecked()) { // Horizontal
+           /* if() { // check if coordinates are  possible
+
+            }*/
+           aircraftCarrier[1] = firstCoordArr[4]+1;
+           aircraftCarrier[2] = firstCoordArr[4]+2;
+           aircraftCarrier[3] = firstCoordArr[4]+3;
+           aircraftCarrier[4] = firstCoordArr[4]+4;
+        }
+        else {                             // Vertical
+            aircraftCarrier[1] = firstCoordArr[4]+10;
+            aircraftCarrier[2] = firstCoordArr[4]+20;
+            aircraftCarrier[3] = firstCoordArr[4]+30;
+            aircraftCarrier[4] = firstCoordArr[4]+40;
+        }
+
+
+    }
+///////////////////////////  <- END FILL SHIP COORDINATE ARRAYS ///////////////////////
 
 
     ui->radioButton->setAutoExclusive(false);
