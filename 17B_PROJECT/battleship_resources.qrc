@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../TESTS/battleship.jpg</file>
+        <file>../TESTS/radar.jpg</file>
+        <file>../Downloads/Army Men- Sarge's Heroes - Attack.mp3</file>
+    </qresource>
+</RCC>
