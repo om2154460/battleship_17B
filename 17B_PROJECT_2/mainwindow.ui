@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>779</width>
-    <height>518</height>
+    <width>805</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>160</y>
+      <x>50</x>
+      <y>180</y>
       <width>341</width>
-      <height>271</height>
+      <height>301</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="playerGrid"/>
@@ -139,8 +139,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>130</y>
+      <x>530</x>
+      <y>120</y>
       <width>131</width>
       <height>16</height>
      </rect>
@@ -160,8 +160,8 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>130</y>
+      <x>130</x>
+      <y>120</y>
       <width>121</width>
       <height>16</height>
      </rect>
@@ -181,13 +181,71 @@
    <widget class="QWidget" name="gridLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>160</y>
+      <x>440</x>
+      <y>180</y>
       <width>341</width>
-      <height>271</height>
+      <height>301</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="enemyGrid"/>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>180</y>
+      <width>31</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="playerRowLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>150</y>
+      <width>341</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="playerColLayout"/>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_5">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>180</y>
+      <width>31</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="enemyRowLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_6">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>150</y>
+      <width>341</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="enemyColLayout"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -195,7 +253,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>779</width>
+     <width>805</width>
      <height>21</height>
     </rect>
    </property>

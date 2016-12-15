@@ -7,6 +7,7 @@
 #include <QVector>
 #include <QMenuBar>
 #include <QAction>
+#include <QLabel>
 #include "ship.h"
 #include "player.h"
 #include "conversionfunctions.h"
@@ -60,11 +61,17 @@ private:
     bool overlap;
     QPushButton * playerCells[100];
     QPushButton * enemyCells[100];
+    QLabel * prowLabels[10];
+    QLabel * pcolLabels[10];
+    QLabel * erowLabels[10];
+    QLabel * ecolLabels[10];
     ConversionFunctions cf;
     AI_Attack_Algorithm aiAttack;
 
     void createPlayerGrid();
     void createEnemyGrid();
+    void createPlayerGridLabels();
+    void createEnemyGridLabels();
 
     Ship fillShip(QString shipName, QString coordinate, QChar direction);
     QString nextPosition(QChar direction, QString lastHit);

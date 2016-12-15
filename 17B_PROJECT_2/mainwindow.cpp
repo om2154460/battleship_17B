@@ -3,6 +3,7 @@
 #include "ai_ship_placer.h"
 #include "logmenu.h"
 
+#include <Qt>
 #include <QStyle>
 #include <QPixmap>
 #include <QButtonGroup>
@@ -10,6 +11,7 @@
 #include <QMessageBox>
 #include <vector>
 #include <algorithm>
+#include <QFont>
 using namespace std;
 
 
@@ -39,10 +41,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label->setScaledContents(true);
     ui->label->setVisible(false);
 
-    //play 1
-
+    //Create Grids
     createPlayerGrid();
     createEnemyGrid();
+    //Create Labels for grids
+    createPlayerGridLabels();
+    createEnemyGridLabels();
+
 
     time2Play = false;
     playerTurn = false;
@@ -587,6 +592,53 @@ void MainWindow::createEnemyGrid(){
     //Set spacing to zero so that there is "no" space between cells
     ui->enemyGrid->setSpacing(0);
 
+}
+//Add player grid row and column labels
+void MainWindow::createPlayerGridLabels(){
+    //Set the font to be used for the Labels
+    QFont serifFont("Times", 10, QFont::Bold);
+    //Add the Row labels
+    for(int i = 0; i < 10; i++){
+        prowLabels[i] = new QLabel(cf.index2Row(i));
+        prowLabels[i]->setFont(serifFont);
+        prowLabels[i]->setAlignment(Qt::AlignCenter);
+        ui->playerRowLayout->addWidget(prowLabels[i], i, 0);
+    }
+    //Set spacing to zero so that there is "no" space between cells
+    ui->playerRowLayout->setSpacing(0);
+    //Add the column Labels
+    for(int i = 0; i < 10; i++){
+        pcolLabels[i] = new QLabel(QString::number(i));
+        pcolLabels[i]->setFont(serifFont);
+        pcolLabels[i]->setAlignment(Qt::AlignCenter);
+        ui->playerColLayout->addWidget(pcolLabels[i], 0, i);
+    }
+    //Set spacing to zero so that there is "no" space between cells
+    ui->playerColLayout->setSpacing(0);
+}
+
+//Add player grid row and column labels
+void MainWindow::createEnemyGridLabels(){
+    //Set the font to be used for the Labels
+    QFont serifFont("Times", 10, QFont::Bold);
+    //Add the Row labels
+    for(int i = 0; i < 10; i++){
+        erowLabels[i] = new QLabel(cf.index2Row(i));
+        erowLabels[i]->setFont(serifFont);
+        erowLabels[i]->setAlignment(Qt::AlignCenter);
+        ui->enemyRowLayout->addWidget(erowLabels[i], i, 0);
+    }
+    //Set spacing to zero so that there is "no" space between cells
+    ui->enemyRowLayout->setSpacing(0);
+    //Add the column Labels
+    for(int i = 0; i < 10; i++){
+        ecolLabels[i] = new QLabel(QString::number(i));
+        ecolLabels[i]->setFont(serifFont);
+        ecolLabels[i]->setAlignment(Qt::AlignCenter);
+        ui->enemyColLayout->addWidget(ecolLabels[i], 0, i);
+    }
+    //Set spacing to zero so that there is "no" space between cells
+    ui->enemyColLayout->setSpacing(0);
 }
 
 void MainWindow::AIShipPlacement(){
