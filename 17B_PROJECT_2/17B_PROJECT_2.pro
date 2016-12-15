@@ -14,10 +14,16 @@ QT += widgets
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    game.cpp
+    conversionfunctions.cpp \
+    ai_ship_placer.cpp \
+    ship.cpp \
+    player.cpp
 
 HEADERS  += mainwindow.h \
-    game.h
+    conversionfunctions.h \
+    ai_ship_placer.h \
+    ship.h \
+    player.h
 
 FORMS    += mainwindow.ui \
     game.ui

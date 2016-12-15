@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <game.h>
 
 #include <QStyle>
 #include <QPixmap>
@@ -18,53 +17,34 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_3->setText("<font color='red'>Coordinates may not overlap, click Reset</font>");
     ui->label_3->setVisible(false);
 
-    ui->pushButton_3->setEnabled(false);
+    ui->btnEnterShip->setEnabled(false);
 
     QButtonGroup bg;
-    bg.addButton(ui->radioButton);
-    bg.addButton(ui->radioButton_2);
+    bg.addButton(ui->rbtnHorizontal);
+    bg.addButton(ui->rbtnVertical);
 
-numDrops=0;
-int dim = 10;
+    numDrops=0;
 
-ui->pushButton->setEnabled(false);
+    ui->btnPlay->setEnabled(false);
 
-QPixmap pix1("C:/Users/User/17B_PROJECT_2/checkmark.jpg");
-ui->label->setPixmap(pix1);
-ui->label->setScaledContents(true);
-ui->label->setVisible(false);
+    QPixmap pix1("C:/Users/User/17B_PROJECT_2/checkmark.jpg");
+    ui->label->setPixmap(pix1);
+    ui->label->setScaledContents(true);
+    ui->label->setVisible(false);
 
-//play 1
+    //play 1
 
-    int index=0;
-
-    for(int col=0;col<10;col++) {
-        for(int row=0;row<10;row++) {
-            index = (row*10)+col;
-            cells[index] = new QPushButton;
-            cells[index]->setObjectName("p" + QString::number(index));
-            ui->gridLayout->addWidget(cells[(row*10)+col],row,col);
-            QObject::connect(cells[index],SIGNAL(released()),this,SLOT(handleButton()));
-        }
-    }
-
-    // Vertical spacers
-    ui->gridLayout->addItem(new QSpacerItem(20,40,QSizePolicy::Minimum,QSizePolicy::Expanding),0,0,1,dim+2);
-    ui->gridLayout->addItem(new QSpacerItem(20,40,QSizePolicy::Minimum,QSizePolicy::Expanding),dim+1,0,1,dim+2);
-
-    // Horizontal spacers
-    ui->gridLayout->addItem(new QSpacerItem(40,20,QSizePolicy::Expanding,QSizePolicy::Minimum),1,0,dim,1);
-    ui->gridLayout->addItem(new QSpacerItem(40,20,QSizePolicy::Expanding,QSizePolicy::Minimum),1,dim+1,dim,1);
-
+    createPlayerGrid();
+    createEnemyGrid();
 
 }
 
-void MainWindow::handleButton() {
+void MainWindow::handlePlayerButton() {
     ((QPushButton*)sender())->setStyleSheet("background-color: black");
     numDrops++;
 
     int cnt=0;
-    while(cells[cnt]->objectName() != ((QPushButton*)sender())->objectName()) {
+    while(playerCells[cnt]->objectName() != ((QPushButton*)sender())->objectName()) {
         cnt++;
     }
 
@@ -87,7 +67,7 @@ qDebug() << "count: " << cnt;
     }
 
     for(int i=0;i<100;i++) {
-        cells[i]->setEnabled(false);
+        playerCells[i]->setEnabled(false);
     }
 }
 
@@ -95,11 +75,7 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked() { // Play button
-   Game g;
-    g.setModal(true);
-    g.exec();
-    this->close();
+void MainWindow::on_btnPlay_clicked() { // Play button
 
     /*qDebug() << firstCoordArr[0] << " "  << firstCoordArr[1] << " "  << firstCoordArr[2] << " "  << firstCoordArr[3] << " " << firstCoordArr[4];
     qDebug() << patrol[0] << " " << patrol[1];
@@ -111,23 +87,23 @@ void MainWindow::on_pushButton_clicked() { // Play button
 
 }
 
-void MainWindow::on_pushButton_2_clicked() { // Reset button
+void MainWindow::on_btnReset_clicked() { // Reset button
     for(int i=0;i<100;i++) {
-        cells[i]->setStyleSheet("");
-        cells[i]->setEnabled(true);
+        playerCells[i]->setStyleSheet("");
+        playerCells[i]->setEnabled(true);
     }
     numDrops=0;
     ui->label->setVisible(false);
-    ui->label_2->setText("Click Your Patrol Boat");
+    ui->label_2->setText("Click Your Patrol Boat (2)");
     ui->label_3->setVisible(false);
-    ui->radioButton->setEnabled(true);
-    ui->radioButton_2->setEnabled(true);
+    ui->rbtnHorizontal->setEnabled(true);
+    ui->rbtnVertical->setEnabled(true);
    // patrol[0] = 0;
    // patrol[1] = 0;
 
 }
 
-void MainWindow::on_pushButton_3_clicked() { // 1 at a time
+void MainWindow::on_btnEnterShip_clicked() { // 1 at a time
 /////////////////////////// FILL SHIP COORDINATE ARRAYS -> ///////////////////////
 overlap = false;
 
@@ -135,7 +111,7 @@ overlap = false;
 
          patrol[0] = firstCoordArr[0];
 
-        if(ui->radioButton->isChecked()) { // Horizontal
+        if(ui->rbtnHorizontal->isChecked()) { // Horizontal
             if(firstCoordArr[0]%10 >=9) {patrol[1] = firstCoordArr[0]-1; } // check if coordinates are possible
             else { patrol[1] = firstCoordArr[0]+1; }
 
@@ -145,7 +121,7 @@ overlap = false;
             else { patrol[1] = firstCoordArr[0]+10; }
         }
 
-        cells[patrol[1]]->setStyleSheet("background-color: black");
+        playerCells[patrol[1]]->setStyleSheet("background-color: black");
 
         coordTestVec.push_back(patrol[0]);
         coordTestVec.push_back(patrol[1]);
@@ -154,7 +130,7 @@ overlap = false;
 
         if(numDrops == 2) {
             destroyer[0] = firstCoordArr[1];
-            if(ui->radioButton->isChecked()) { // Horizontal
+            if(ui->rbtnHorizontal->isChecked()) { // Horizontal
                  if(firstCoordArr[1]%10 == 9) { destroyer[1] = firstCoordArr[1]-1;
                      destroyer[2] = firstCoordArr[1]-2; }
                  else {destroyer[1] = firstCoordArr[1]+1;
@@ -168,10 +144,10 @@ overlap = false;
             else {destroyer[1] = firstCoordArr[1]+10;
                 destroyer[2] = firstCoordArr[1]+20; }
         }
-            cells[destroyer[1]]->setStyleSheet("background-color: black");
-            cells[destroyer[2]]->setStyleSheet("background-color: black");
+            playerCells[destroyer[1]]->setStyleSheet("background-color: black");
+            playerCells[destroyer[2]]->setStyleSheet("background-color: black");
 
-            for(int i=0;i<coordTestVec.size();i++) {
+            for(int i=0;i<signed(coordTestVec.size());i++) {
                 if(coordTestVec[i] == destroyer[0] || coordTestVec[i] == destroyer[1] || coordTestVec[i] == destroyer[2]) {
                  overlap = true;
                 }
@@ -192,7 +168,7 @@ overlap = false;
 
         if(numDrops == 3) {
             submarine[0] = firstCoordArr[2];
-            if(ui->radioButton->isChecked()) { // Horizontal
+            if(ui->rbtnHorizontal->isChecked()) { // Horizontal
                 if(firstCoordArr[2]%10 >= 8) { submarine[1] = firstCoordArr[2]-1;
                     submarine[2] = firstCoordArr[2]-2; }
                 else {submarine[1] = firstCoordArr[2]+1;
@@ -205,10 +181,10 @@ overlap = false;
                 else {submarine[1] = firstCoordArr[2]+10;
                        submarine[2] = firstCoordArr[2]+20; }
         }
-            cells[submarine[1]]->setStyleSheet("background-color: black");
-            cells[submarine[2]]->setStyleSheet("background-color: black");
+            playerCells[submarine[1]]->setStyleSheet("background-color: black");
+            playerCells[submarine[2]]->setStyleSheet("background-color: black");
 
-            for(int i=0;i<coordTestVec.size();i++) {
+            for(int i=0;i<signed(coordTestVec.size());i++) {
                 if(coordTestVec[i] == submarine[0] || coordTestVec[i] == submarine[1] || coordTestVec[i] == submarine[2]) {
                  overlap = true;
                 }
@@ -229,7 +205,7 @@ if(overlap == false) {
 
         battleship[0] = firstCoordArr[3];
 
-        if(ui->radioButton->isChecked()) { // Horizontal
+        if(ui->rbtnHorizontal->isChecked()) { // Horizontal
             if(firstCoordArr[3]%10 > 6) { battleship[1] = firstCoordArr[3]-1;
                 battleship[2] = firstCoordArr[3]-2;
                 battleship[3] = firstCoordArr[3]-3;}
@@ -246,11 +222,11 @@ if(overlap == false) {
                    battleship[2] = firstCoordArr[3]+20;
                    battleship[3] = firstCoordArr[3]+30;}
         }
-        cells[battleship[1]]->setStyleSheet("background-color: black");
-        cells[battleship[2]]->setStyleSheet("background-color: black");
-        cells[battleship[3]]->setStyleSheet("background-color: black");
+        playerCells[battleship[1]]->setStyleSheet("background-color: black");
+        playerCells[battleship[2]]->setStyleSheet("background-color: black");
+        playerCells[battleship[3]]->setStyleSheet("background-color: black");
 
-        for(int i=0;i<coordTestVec.size();i++) {
+        for(int i=0;i<signed(coordTestVec.size());i++) {
             if(coordTestVec[i] == battleship[0] || coordTestVec[i] == battleship[1]
                     || coordTestVec[i] == battleship[2] || coordTestVec[i] == battleship[3]) {
              overlap = true;
@@ -271,7 +247,7 @@ if(overlap == false) {
 
          aircraftCarrier[0] = firstCoordArr[4];
 
-        if(ui->radioButton->isChecked()) { // Horizontal
+        if(ui->rbtnHorizontal->isChecked()) { // Horizontal
             if(firstCoordArr[4]%10 >= 5 ) { aircraftCarrier[1] = firstCoordArr[4]-1;
                 aircraftCarrier[2] = firstCoordArr[4]-2;
                 aircraftCarrier[3] = firstCoordArr[4]-3;
@@ -296,12 +272,12 @@ if(overlap == false) {
                         }
         }
 
-        cells[aircraftCarrier[1]]->setStyleSheet("background-color: black");
-        cells[aircraftCarrier[2]]->setStyleSheet("background-color: black");
-        cells[aircraftCarrier[3]]->setStyleSheet("background-color: black");
-        cells[aircraftCarrier[4]]->setStyleSheet("background-color: black");
+        playerCells[aircraftCarrier[1]]->setStyleSheet("background-color: black");
+        playerCells[aircraftCarrier[2]]->setStyleSheet("background-color: black");
+        playerCells[aircraftCarrier[3]]->setStyleSheet("background-color: black");
+        playerCells[aircraftCarrier[4]]->setStyleSheet("background-color: black");
 
-        for(int i=0;i<coordTestVec.size();i++) {
+        for(int i=0;i<signed(coordTestVec.size());i++) {
             if(coordTestVec[i] == aircraftCarrier[0] || coordTestVec[i] == aircraftCarrier[1]
                     || coordTestVec[i] == aircraftCarrier[2] || coordTestVec[i] == aircraftCarrier[3]
                     || coordTestVec[i] == aircraftCarrier[4]) {
@@ -320,61 +296,132 @@ if(overlap == false) {
 
 if(overlap == true) {
     ui->label_3->setVisible(true);
-    ui->radioButton->setEnabled(false);
-    ui->radioButton_2->setEnabled(false);
+    ui->rbtnHorizontal->setEnabled(false);
+    ui->rbtnVertical->setEnabled(false);
     for(int i=0;i<100;i++) {
-        cells[i]->setEnabled(false);
+        playerCells[i]->setEnabled(false);
     }
 }
 ///////////////////////////  <- END FILL SHIP COORDINATE ARRAYS ///////////////////////
 
 
-    ui->radioButton->setAutoExclusive(false);
-    ui->radioButton_2->setAutoExclusive(false);
-    ui->radioButton->setChecked(false);
-    ui->radioButton_2->setChecked(false);
-    ui->radioButton->setAutoExclusive(true);
-    ui->radioButton_2->setAutoExclusive(true);
+    ui->rbtnHorizontal->setAutoExclusive(false);
+    ui->rbtnVertical->setAutoExclusive(false);
+    ui->rbtnHorizontal->setChecked(false);
+    ui->rbtnVertical->setChecked(false);
+    ui->rbtnHorizontal->setAutoExclusive(true);
+    ui->rbtnVertical->setAutoExclusive(true);
 
     if(overlap == false) {
          for(int i=0;i<100;i++) {
-            cells[i]->setEnabled(true);
+            playerCells[i]->setEnabled(true);
         }
     }
 
     if(numDrops == 1) {
-        ui->label_2->setText("Click Destroyer Coordinate");
+        ui->label_2->setText("Click Destroyer Coordinate (3)");
     }
     else if(numDrops == 2) {
-        ui->label_2->setText("Click Submarine Coordinate");
+        ui->label_2->setText("Click Submarine Coordinate (3)");
     }
     else if(numDrops == 3) {
-        ui->label_2->setText("Click Battleship Coordinate");
+        ui->label_2->setText("Click Battleship Coordinate (4)");
     }
     else if(numDrops == 4) {
-        ui->label_2->setText("Click Aircraft Carrier Coordinate");
+        ui->label_2->setText("Click Aircraft Carrier Coordinate (5)");
     }
     else if(numDrops == 5) {
         ui->label_2->setText("Ships Have Been Set");
-        ui->radioButton->setEnabled(false);
-        ui->radioButton_2->setEnabled(false);
+        ui->rbtnHorizontal->setEnabled(false);
+        ui->rbtnVertical->setEnabled(false);
         for(int i=0;i<100;i++) {
-            cells[i]->setEnabled(false);
+            playerCells[i]->setEnabled(false);
         }
     }
 
     if(numDrops>=5) {
-        ui->pushButton->setEnabled(true);
+        ui->btnPlay->setEnabled(true);
         ui->label->setVisible(true);
     }
-ui->pushButton_3->setEnabled(false);
+ui->btnEnterShip->setEnabled(false);
 
 }
 
-void MainWindow::on_radioButton_clicked() {
-    ui->pushButton_3->setEnabled(true);
+void MainWindow::on_rbtnHorizontal_clicked() {
+    ui->btnEnterShip->setEnabled(true);
 }
 
-void MainWindow::on_radioButton_2_clicked() {
-    ui->pushButton_3->setEnabled(true);
+void MainWindow::on_rbtnVertical_clicked() {
+    ui->btnEnterShip->setEnabled(true);
 }
+
+//Add the cells to the Player Grid
+void MainWindow::createPlayerGrid(){
+    int index = 0;
+    int dim = 10;
+    for(int col = 0; col < 10; col++) {
+        for(int row = 0; row < 10; row++) {
+            index = (row * 10) + col;
+            //Create QPushButton
+            playerCells[index] = new QPushButton;
+            //Set Newly created QPushButton's Object name to the index in the QPushButton Array
+            playerCells[index]->setObjectName(QString::number(index));
+            //Set QPushButton's size
+            playerCells[index]->setFixedSize(35, 35);
+            //Add the QPushButton to the GridLayout
+            ui->playerGrid->addWidget(playerCells[(row*10)+col],row,col);
+            //Connect the QPushButton's released signal to the handleButton function
+            QObject::connect(playerCells[index],SIGNAL(released()),this,SLOT(handlePlayerButton()));
+        }
+    }
+
+    //Set spacing to zero so that there is "no" space between cells
+    ui->playerGrid->setSpacing(0);
+    // Vertical spacers
+    ui->playerGrid->addItem(new QSpacerItem(20,40,QSizePolicy::Minimum,QSizePolicy::Expanding), 0, 0, 1, dim + 2);
+    ui->playerGrid->addItem(new QSpacerItem(20,40,QSizePolicy::Minimum,QSizePolicy::Expanding), dim + 1, 0, 1, dim + 2);
+
+    // Horizontal spacers
+    ui->playerGrid->addItem(new QSpacerItem(40,20,QSizePolicy::Expanding,QSizePolicy::Minimum), 1, 0, dim, 1);
+    ui->playerGrid->addItem(new QSpacerItem(40,20,QSizePolicy::Expanding,QSizePolicy::Minimum), 1, dim + 1, dim, 1);
+
+
+}
+//Add the cells to the Enemy Grid
+void MainWindow::createEnemyGrid(){
+    int index=0;
+    int dim = 10;
+
+    for(int col = 0; col < 10; col++) {
+        for(int row = 0 ;row < 10; row++) {
+            index = (row * 10) + col;
+            //Create QPushButton
+            enemyCells[index] = new QPushButton;
+            //Set Newly created QPushButton's Object name to the index in the QPushButton Array
+            enemyCells[index]->setObjectName(QString::number(index));
+            //Set QPushButton's size
+            enemyCells[index]->setFixedSize(35, 35);
+            //Add the QPushButton to the GridLayout
+            ui->enemyGrid->addWidget(enemyCells[(row*10)+col],row,col);
+            //Connect the QPushButton's released signal to the handleButton function
+            //QObject::connect(enemyCells[index],SIGNAL(released()),this,SLOT(handleButton()));
+        }
+    }
+
+    // Vertical spacers
+    ui->enemyGrid->addItem(new QSpacerItem(20,40,QSizePolicy::Minimum,QSizePolicy::Expanding),0,0,1,dim+2);
+    ui->enemyGrid->addItem(new QSpacerItem(20,40,QSizePolicy::Minimum,QSizePolicy::Expanding),dim+1,0,1,dim+2);
+
+    // Horizontal spacers
+    ui->enemyGrid->addItem(new QSpacerItem(40,20,QSizePolicy::Expanding,QSizePolicy::Minimum),1,0,dim,1);
+    ui->enemyGrid->addItem(new QSpacerItem(40,20,QSizePolicy::Expanding,QSizePolicy::Minimum),1,dim+1,dim,1);
+    //Set spacing to zero so that there is "no" space between cells
+    ui->enemyGrid->setSpacing(0);
+
+}
+
+void MainWindow::AIShipPlacement(){
+
+}
+
+

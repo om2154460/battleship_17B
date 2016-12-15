@@ -1,11 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <game.h>
-
 #include <QMainWindow>
 #include <QPushButton>
 #include <vector>
+#include <QVector>
 
 namespace Ui {
 class MainWindow;
@@ -15,25 +14,29 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 friend class Game;
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-int patrol[2],destroyer[3],submarine[3];
-int battleship[4], aircraftCarrier[5];
+    int patrol[2],destroyer[3],submarine[3];
+    int battleship[4], aircraftCarrier[5];
+
+
 
 public slots:
-    void handleButton();
+    void handlePlayerButton();
+    void AIShipPlacement();
 
 private slots:
-    void on_pushButton_clicked();
+    void on_btnPlay_clicked();
 
-    void on_pushButton_2_clicked();
+    void on_btnReset_clicked();
 
-    void on_pushButton_3_clicked();
+    void on_btnEnterShip_clicked();
 
-    void on_radioButton_clicked();
+    void on_rbtnHorizontal_clicked();
 
-    void on_radioButton_2_clicked();
+    void on_rbtnVertical_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -42,7 +45,10 @@ private:
     //int coordTestArr[17];
     std::vector<int> coordTestVec;
     bool overlap;
-    QPushButton *cells[100];
+    QPushButton * playerCells[100];
+    QPushButton * enemyCells[100];
+    void createPlayerGrid();
+    void createEnemyGrid();
 };
 
 #endif // MAINWINDOW_H
