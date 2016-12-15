@@ -11,6 +11,10 @@ public:
     int shipName2Index(QString name);
     QString index2ShipName(int index);
     int shipName2Size(QString name);
+    QString intNum2StrNum(int num);
+    int strNum2Num(QString num);
+    QString num2StrLetter(int x);
+    int strLetter2Num(QString letter);
 };
 
 #endif // CONVERSIONFUNCTIONS_H

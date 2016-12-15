@@ -103,7 +103,7 @@ QString ConversionFunctions::convertIndex2Cell(int index){
 int ConversionFunctions::convertCellr2Index(QString coordinate){
     QString tempRow = coordinate.mid(0, 1);
     QChar row = tempRow[0];
-    QString column = coordinate.mid(0, coordinate.size() - 1);
+    QString column = coordinate.mid(1, coordinate.size() - 1);
 
     int index = 0;
 
@@ -194,3 +194,96 @@ int ConversionFunctions::shipName2Size(QString name){
 
     return 99;  //Only needed so compiler doesn't throw a fit...
 }
+//Convert an integer number to a QString letter (0-9 => A-J)
+QString ConversionFunctions::num2StrLetter(int x){
+    //0-9 == A-J
+    switch (x){
+    case 0: return "A";
+    case 1: return "B";
+    case 2: return "C";
+    case 3: return "D";
+    case 4: return "E";
+    case 5: return "F";
+    case 6: return "G";
+    case 7: return "H";
+    case 8: return "I";
+    case 9: return "J";
+    }
+
+    return "Wrong index given"; //Only needed so compiler doesn't throw a fit...
+}
+//Convert a QString number to an integer number (0-10)
+int ConversionFunctions::strNum2Num(QString num){
+    QChar cNum;
+    if (num == "10")
+        return 10;
+    else
+        cNum = num.at(0);
+    switch (cNum.toLatin1()){
+    case '0': return 0;
+    case '1': return 1;
+    case '2': return 2;
+    case '3': return 3;
+    case '4': return 4;
+    case '5': return 5;
+    case '6': return 6;
+    case '7': return 7;
+    case '8': return 8;
+    case '9': return 9;
+    }
+
+    return 99;  //Only needed so compiler doesn't throw a fit...
+}
+//Convert integer number to QString number (0-10)
+QString ConversionFunctions::intNum2StrNum(int num){
+    switch (num){
+    case 0: return "0";
+    case 1: return "1";
+    case 2: return "2";
+    case 3: return "3";
+    case 4: return "4";
+    case 5: return "5";
+    case 6: return "6";
+    case 7: return "7";
+    case 8: return "8";
+    case 9: return "9";
+    case 10: return "10";
+    }
+
+    return "Wrong index given"; //Only needed so compiler doesn't throw a fit...
+}
+//Convert a QString letter to an integer number (A-J => 0-9)
+int ConversionFunctions::strLetter2Num(QString letter){
+    QChar cLetter = letter.at(0);
+    switch (cLetter.toLatin1()){
+        case 'A': return 0;
+        case 'B': return 1;
+        case 'C': return 2;
+        case 'D': return 3;
+        case 'E': return 4;
+        case 'F': return 5;
+        case 'G': return 6;
+        case 'H': return 7;
+        case 'I': return 8;
+        case 'J': return 9;
+    }
+
+    return 99;  //Only needed so compiler doesn't throw a fit...
+}
+//Convert an intger index (0-9) to QString row (A-J)
+QString ConversionFunctions::index2Row(int index){
+    switch(index){
+        case 0: return "A";
+        case 1: return "B";
+        case 2: return "C";
+        case 3: return "D";
+        case 4: return "E";
+        case 5: return "F";
+        case 6: return "G";
+        case 7: return "H";
+        case 8: return "I";
+        case 9: return "J";
+    }
+    return "A";
+}
+
