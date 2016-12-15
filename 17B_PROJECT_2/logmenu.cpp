@@ -14,7 +14,7 @@ logmenu::logmenu(QWidget *parent) :
 
     ui->setupUi(this);
 
-    QPixmap bkgnd("C:/Users/Jose/Documents/BattleshipGUI/battleship2.png");
+    QPixmap bkgnd("C:/BattleShip_Pictures/battleship.jpg");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
@@ -30,8 +30,8 @@ logmenu::~logmenu()
 
 void logmenu::on_quit_clicked()
 {
-
-    delete ui;
+    reject();
+    //delete ui;
 }
 
 void logmenu::on_enter_clicked()
@@ -41,8 +41,8 @@ void logmenu::on_enter_clicked()
     username = ui->userline->text();
     password = ui->passline->text();
 
-    user = username;
-    pass = password;
+    this->userName = username;
+    this->password = password;
 
     /*if(username == "test" && password == "test")
     {
@@ -53,8 +53,18 @@ void logmenu::on_enter_clicked()
         QMessageBox::warning(this, "Login", "Login is incorrect");
     }*/
 
-    this->close();
 
+    accept();
+    //this->close();
+
+}
+
+void logmenu::setUser(QString user){
+    this->userName = user;
+}
+
+void logmenu::setPass(QString pass){
+    this->password = pass;
 }
 
 

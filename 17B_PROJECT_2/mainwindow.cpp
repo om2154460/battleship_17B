@@ -12,6 +12,7 @@
 #include <vector>
 #include <algorithm>
 #include <QFont>
+#include <QDialog>
 using namespace std;
 
 
@@ -52,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     time2Play = false;
     playerTurn = false;
     debugging = true;
+    loggedIn = false;
 
     //Setup menuBar
     setupMenu();
@@ -913,6 +915,11 @@ void MainWindow::createMenus(){
 }
 //Open New Game QDialog and start new ship placement
 void MainWindow::newGame(){
+    //Reset the grid colors
+    for(int i = 0; i < 100; i++){
+        playerCells[i]->setStyleSheet("background-color: grey");
+        enemyCells[i]->setStyleSheet("background-color: grey");
+    }
 
 }
 //Open Load Game QDialog and load a game from the database
@@ -929,20 +936,50 @@ void MainWindow::helpScreen(){
 }
 //Open the login QDialog
 void MainWindow::loginScreen(){
-    /*logmenu lm = new logmenu();
-    if(logmenu.exec() == QDialog::accepted()){
-        userName = logmenu->getUser();
-        password = logmenu->getPass();
+    // show modal window event loop and wait for button clicks
+
+    int accepted = 1;
+
+    //Initialize Login Screen
+    logmenu lm(this);
+    //Pass in current login credintials
+    lm.setUser(userName);
+    lm.setUser(password);
+    //Open Login Screen, returning accept or not
+    if(lm.exec() == accepted){
+        userName = lm.getUser();
+        password = lm.getPass();
+        loggedIn = true;
     }
 
     if(debugging){
-        qDebug << "UserName: " + userName;
-        qDebug << "Password: " + password;
-    }*/
+        qDebug() << "UserName: " + userName;
+        qDebug() << "Password: " + password;
+    }
 
 
 }
 //Reset the currently placed ships
 void MainWindow::resetShips(){
     //Should only work while setting up ships, not when the game as started.
+
+    //Clear all the temporary ships
+    tempShips.erase(tempShips.begin(), tempShips.end());
+    //Reset the player grid
+    for(int i = 0; i < 100; i++){
+        playerCells[i]->setStyleSheet("background-color: grey");
+    }
+
+}
+//Commit ship placement to the Player's ships
+void MainWindow::addShip(){
+    if(drops < 5){
+        vector<QString> tempCoordinates;
+        Ship tempShip;
+        int shipSize = cf.shipName2Size(cf.index2ShipName(drops));
+
+        for(int i = 0; i < shipSize; i++){
+
+        }
+    }
 }

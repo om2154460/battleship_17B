@@ -28,6 +28,7 @@ public:
     int patrol[2],destroyer[3],submarine[3];
     int battleship[4], aircraftCarrier[5];
 
+    void addShip();
 
 
 public slots:
@@ -78,6 +79,7 @@ private:
 
 
     QVector<Ship> enemyShips;
+    QVector<Ship> tempShips;
     char direction;
     int drops;
 
@@ -86,6 +88,7 @@ private:
 
     QString userName;
     QString password;
+    bool loggedIn;
 
     bool time2Play;
     bool playerTurn;

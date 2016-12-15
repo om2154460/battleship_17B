@@ -18,11 +18,13 @@ public:
     explicit logmenu(QWidget *parent = 0);
     ~logmenu();
 
-    QString getUser(){return user;}
-    QString getPass(){return pass;}
+    QString getUser(){return userName;}
+    QString getPass(){return password;}
+    void setUser(QString user);
+    void setPass(QString pass);
 
-    QString user;
-    QString pass;
+    QString userName;
+    QString password;
 
 private slots:
 
@@ -36,3 +38,4 @@ private:
 };
 
 #endif // LOGMENU_H
+
