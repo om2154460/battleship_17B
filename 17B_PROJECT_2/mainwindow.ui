@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>877</width>
-    <height>610</height>
+    <width>779</width>
+    <height>518</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,15 +17,15 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>110</y>
-      <width>361</width>
-      <height>301</height>
+      <x>30</x>
+      <y>160</y>
+      <width>341</width>
+      <height>271</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="playerGrid"/>
+    <layout class="QGridLayout" name="gridLayout"/>
    </widget>
-   <widget class="QRadioButton" name="rbtnHorizontal">
+   <widget class="QRadioButton" name="radioButton">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -38,7 +38,7 @@
      <string>Horizontal</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="rbtnVertical">
+   <widget class="QRadioButton" name="radioButton_2">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -51,7 +51,7 @@
      <string>Vertical</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnPlay">
+   <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
       <x>230</x>
@@ -64,7 +64,7 @@
      <string>Play</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnReset">
+   <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
       <x>330</x>
@@ -110,7 +110,7 @@
      <string>Click your Patrol Boat Coordinate</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnEnterShip">
+   <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
       <x>450</x>
@@ -136,36 +136,58 @@
      <string/>
     </property>
    </widget>
-   <widget class="QWidget" name="gridLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>110</y>
-      <width>361</width>
-      <height>301</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="enemyGrid"/>
-   </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>90</y>
-      <width>71</width>
+      <x>410</x>
+      <y>130</y>
+      <width>131</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <bold>true</bold>
       <underline>true</underline>
      </font>
     </property>
     <property name="text">
-     <string>Enemy Grid</string>
+     <string>Opponent's Board</string>
     </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>130</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+      <underline>true</underline>
+     </font>
+    </property>
+    <property name="text">
+     <string>Player's Board</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>160</y>
+      <width>341</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -173,7 +195,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>877</width>
+     <width>779</width>
      <height>21</height>
     </rect>
    </property>
