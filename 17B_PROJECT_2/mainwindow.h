@@ -8,6 +8,7 @@
 #include "ship.h"
 #include "player.h"
 #include "conversionfunctions.h"
+#include "ai_attack_algorithm.h"
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +42,8 @@ private slots:
 
     void on_rbtnVertical_clicked();
 
+    void gamePlay();
+
 private:
     Ui::MainWindow *ui;
     int numDrops;
@@ -51,6 +54,7 @@ private:
     QPushButton * playerCells[100];
     QPushButton * enemyCells[100];
     ConversionFunctions cf;
+    AI_Attack_Algorithm aiAttack;
 
     void createPlayerGrid();
     void createEnemyGrid();
@@ -60,6 +64,8 @@ private:
     Player player;
     Player enemy;
 
+    bool time2Play;
+    bool playerTurn;
     bool debugging;
 
 };

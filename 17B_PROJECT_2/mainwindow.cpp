@@ -38,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createPlayerGrid();
     createEnemyGrid();
 
+    time2Play = false;
+    playerTurn = false;
     debugging = true;
 
 }
@@ -95,14 +97,14 @@ void MainWindow::on_btnPlay_clicked() { // Play button
         enemyCells[i]->setVisible(true);
     }
 
-ui->btnPlay->setVisible(false);
-ui->btnReset->setVisible(false);
-ui->btnEnterShip->setVisible(false);
-ui->rbtnHorizontal->setVisible(false);
-ui->rbtnVertical->setVisible(false);
-ui->label->setVisible(false);
-ui->label_2->setVisible(false);
-ui->label_4->setVisible(true);
+    ui->btnPlay->setVisible(false);
+    ui->btnReset->setVisible(false);
+    ui->btnEnterShip->setVisible(false);
+    ui->rbtnHorizontal->setVisible(false);
+    ui->rbtnVertical->setVisible(false);
+    ui->label->setVisible(false);
+    ui->label_2->setVisible(false);
+    ui->label_4->setVisible(true);
 
 
 
@@ -110,6 +112,9 @@ ui->label_4->setVisible(true);
 
 
     AIShipPlacement();
+
+    time2Play = true;
+    playerTurn = true;
 
 }
 
@@ -478,8 +483,8 @@ void MainWindow::createEnemyGrid(){
             //Add the QPushButton to the GridLayout
             ui->enemyGrid->addWidget(enemyCells[(row*10)+col],row,col);
             enemyCells[index]->setVisible(false);
-            //Connect the QPushButton's released signal to the handleButton function
-            //QObject::connect(enemyCells[index],SIGNAL(released()),this,SLOT(handleButton()));
+            //Connect the QPushButton's released signal to the gamePlay() function
+            QObject::connect(enemyCells[index],SIGNAL(released()),this,SLOT(gamePlay()));
         }
     }
 
@@ -517,4 +522,94 @@ void MainWindow::AIShipPlacement(){
     }
 }
 
+void MainWindow::gamePlay(){
+    if(time2Play){
+        bool attackOK;
+        bool gameOver;
+        QString temp;
+        QString result;
+        QString shipName;
+        QString attack;
+        //if(playerTurn){
+            int cnt = 0;
+            while(enemyCells[cnt]->objectName() != ((QPushButton*)sender())->objectName()) {
+                cnt++;
+            }
 
+            attack = cf.convertIndex2Cell(cnt);
+            //Add the coordinate to the player's move list
+            attackOK = player.addMove(attack);
+            if(attackOK){
+                //Check if hit or miss or sunk
+                temp = enemy.checkAttack(attack);
+                //result = temp.substr(0, 1);
+                result = temp.mid(0, 1); //QT way
+                qDebug() << "Player Result" + result;
+                //Tell the player what the result of his/her attack was
+                if (result == "0"){	//Miss
+                    qDebug() << attack << " was a miss.";
+                    enemyCells[cnt]->setStyleSheet("background-color: grey");
+                }
+                else if (result == "1"){	//Ship was hit
+                    qDebug() << attack << " was a hit!";
+                    enemyCells[cnt]->setStyleSheet("background-color: red");
+                }
+                else if (result == "2"){	//Ship was hit and sunk
+                    //shipName = temp.substr(1, temp.size() - 1);
+                    shipName = temp.mid(1, temp.size() - 1); //QT way
+                    qDebug() << attack << " was a hit! " << shipName << " was sunk!";
+                    enemyCells[cnt]->setStyleSheet("background-color: red");
+                }
+                if (enemy.getShipsAlive() == 0){	//Other play no longer has any afloat ships
+                    gameOver = true;	//Set GameOver to true to break out of while loop
+                }
+                playerTurn = false;
+
+                //Change coordinate and set it to disabled
+                enemyCells[cnt]->setEnabled(false);
+            }else{
+                qDebug() << attack + " has already been used. Try a different coordinate";
+            }
+
+        //}else{  //Enemy Turn
+
+            //Get AI attack
+            attack = aiAttack.moveAI();
+            int index = cf.convertCellr2Index(attack);
+            //Add the coordinate to the player's move list
+            attackOK = enemy.addMove(attack);
+            if(attackOK){
+                //Check if hit or miss or sunk
+                temp = player.checkAttack(attack);
+                //result = temp.substr(0, 1);
+                result = temp.mid(0, 1); //QT way
+                qDebug() << "Enemy Result" + result;
+                //Tell the player what the result of his/her attack was
+                if (result == "0"){	//Miss
+                    qDebug() << attack << " was a miss.";
+                    playerCells[index]->setStyleSheet("background-color: grey");
+                }
+                else if (result == "1"){	//Ship was hit
+                    qDebug() << attack << " was a hit!";
+                    playerCells[index]->setStyleSheet("background-color: red");
+                }
+                else if (result == "2"){	//Ship was hit and sunk
+                    //shipName = temp.substr(1, temp.size() - 1);
+                    shipName = temp.mid(1, temp.size() - 1); //QT way
+                    qDebug() << attack << " was a hit! " << shipName << " was sunk!";
+                    playerCells[index]->setStyleSheet("background-color: red");
+                }
+                if (player.getShipsAlive() == 0){	//Other play no longer has any afloat ships
+                    gameOver = true;	//Set GameOver to true to break out of while loop
+                }
+                playerTurn = true;
+            }else{
+                qDebug() << attack + " has already been used. Try a different coordinate";
+            }
+
+            if(gameOver){
+                 //qDebug() << players[playerTurn].getName() << " won! Game Over.";
+            }
+        //}
+    }
+}
