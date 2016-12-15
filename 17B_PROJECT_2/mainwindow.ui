@@ -23,9 +23,9 @@
       <height>271</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout"/>
+    <layout class="QGridLayout" name="playerGrid"/>
    </widget>
-   <widget class="QRadioButton" name="radioButton">
+   <widget class="QRadioButton" name="rbtnHorizontal">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -38,7 +38,7 @@
      <string>Horizontal</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_2">
+   <widget class="QRadioButton" name="rbtnVertical">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -51,7 +51,7 @@
      <string>Vertical</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="btnPlay">
     <property name="geometry">
      <rect>
       <x>230</x>
@@ -64,7 +64,7 @@
      <string>Play</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="btnReset">
     <property name="geometry">
      <rect>
       <x>330</x>
@@ -110,7 +110,7 @@
      <string>Click your Patrol Boat Coordinate</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="btnEnterShip">
     <property name="geometry">
      <rect>
       <x>450</x>
@@ -187,7 +187,7 @@
       <height>271</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout_2"/>
+    <layout class="QGridLayout" name="enemyGrid"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

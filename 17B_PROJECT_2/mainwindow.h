@@ -5,6 +5,8 @@
 #include <QPushButton>
 #include <vector>
 #include <QVector>
+#include <QMenuBar>
+#include <QAction>
 #include "ship.h"
 #include "player.h"
 #include "conversionfunctions.h"
@@ -28,24 +30,29 @@ public:
 
 
 public slots:
-    void handlePlayerButton();
-    void AIShipPlacement();
+
 
 private slots:
     void on_btnPlay_clicked();
-
     void on_btnReset_clicked();
-
     void on_btnEnterShip_clicked();
-
     void on_rbtnHorizontal_clicked();
-
     void on_rbtnVertical_clicked();
 
+    void handleButton();    //Brandon
+    void handlePlayerButton();  //Conner
     void gamePlay();
+    void AIShipPlacement();
+    void newGame();
+    void loadGame();
+    void aboutScreen();
+    void helpScreen();
+    void loginScreen();
+    void resetShips();
 
 private:
     Ui::MainWindow *ui;
+
     int numDrops;
     int firstCoordArr[5];
     //int coordTestArr[17];
@@ -59,14 +66,37 @@ private:
     void createPlayerGrid();
     void createEnemyGrid();
 
+    Ship fillShip(QString shipName, QString coordinate, QChar direction);
+    QString nextPosition(QChar direction, QString lastHit);
+
+
     QVector<Ship> enemyShips;
+    char direction;
+    int drops;
 
     Player player;
     Player enemy;
 
+    QString userName;
+    QString password;
+
     bool time2Play;
     bool playerTurn;
     bool debugging;
+
+    void setupMenu();
+    void createMenuActions();
+    void createMenus();
+    QMenuBar menu;
+    QMenu * fileMenu;
+    QMenu * editMenu;
+    QMenu * helpMenu;
+    QAction * newAct;
+    QAction * loadAct;
+    QAction * loginAct;
+    QAction * aboutAct;
+    QAction * helpAct;
+    QAction * resetAct;
 
 };
 

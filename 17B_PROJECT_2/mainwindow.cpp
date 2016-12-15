@@ -1,11 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "ai_ship_placer.h"
+#include "logmenu.h"
 
 #include <QStyle>
 #include <QPixmap>
 #include <QButtonGroup>
 #include <QDebug>
+#include <QMessageBox>
+#include <vector>
+#include <algorithm>
+using namespace std;
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -13,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow) {
 
     ui->setupUi(this);
-    this->setWindowTitle("Scramble Your Fleet");
+    this->setWindowTitle("BattleShip CIS17B");
 
     ui->label_3->setText("<font color='red'>Coordinates may not overlap, click Reset</font>");
     ui->label_3->setVisible(false);
@@ -25,10 +30,11 @@ MainWindow::MainWindow(QWidget *parent) :
     bg.addButton(ui->rbtnVertical);
 
     numDrops=0;
+    drops = 0;
 
     ui->btnPlay->setEnabled(false);
 
-    QPixmap pix1("C:/Users/User/17B_PROJECT_2/checkmark.jpg");
+    QPixmap pix1("checkmark.jpg");
     ui->label->setPixmap(pix1);
     ui->label->setScaledContents(true);
     ui->label->setVisible(false);
@@ -41,6 +47,87 @@ MainWindow::MainWindow(QWidget *parent) :
     time2Play = false;
     playerTurn = false;
     debugging = true;
+
+    //Setup menuBar
+    setupMenu();
+
+
+    /*
+    logmenu lm = new logmenu();
+    logmenu.exec();
+    QString temp1 = logmenu->getUser();
+    QString temp2 = logmenu->getPass();
+    */
+
+}
+
+void MainWindow::handleButton(){
+
+    QString holdStr;
+    char holdChar;
+    vector<QString> coordinates;
+    vector<Ship> ships;
+    Ship tempShip;
+
+
+    ((QPushButton*)sender())->setStyleSheet("background-color: black");
+    numDrops++;
+
+    int index=0;
+    while(playerCells[index]->objectName() != ((QPushButton*)sender())->objectName()) {
+        index++;
+    }
+    holdStr = cf.convertIndex2Cell(index);
+    holdChar = direction;
+
+
+    //Fill a temporay ship instance
+    tempShip = fillShip(cf.index2ShipName(drops), holdStr, holdChar);
+    //Check that the ship was placed okay
+    if (tempShip.getBadPlacement()){
+        qDebug() << "Placement of the " << cf.index2ShipName(drops) << " was off the grid. Try again!";
+        return;	//Ship placement was bad, go back to the asking the player for new coordinates.
+    }
+    //Get the coordinates of the temporary ship to be checked for collision with other ships that have been placed.
+    vector<QString> tempCoordinates = tempShip.getCoordinates();
+    //Varibales to be used for the comparison code. May be put into a function.
+    bool rePlaceShip = false;
+    std::vector<QString>::iterator it;
+    //Check the ship to be placed will be on top of another other.
+    if (coordinates.size() > 0){
+        for (int w = 0; w < signed(tempCoordinates.size()); w++){
+            it = std::find(coordinates.begin() + w, coordinates.end(), tempCoordinates.at(w));
+            if (it != coordinates.end()){	//A coordinate of the temporary Ship has matched a coordinate from another ship.
+                rePlaceShip = true;	//Set Re-Place flag to true
+                break;
+            }
+        }
+        if (rePlaceShip){
+            qDebug() << "Placement of the " << cf.index2ShipName(drops) << " was on top of another ship. Try again!" << endl;
+            return;
+        }
+    }
+
+    //Add coordinates of the temporary ship the the coordinate vector for comparing.
+    for (int j = 0; j < signed(tempCoordinates.size()); j++){
+        coordinates.push_back(tempCoordinates[j]);
+    }
+    //Fill the player's ship with the temporary ship cooprdinates.
+    player.setShip(cf.shipName2Size(cf.index2ShipName(drops)), tempShip.getCoordinates(), cf.index2ShipName(drops));
+    drops++;
+    //Display where the Ship was placed
+    qDebug() << cf.index2ShipName(drops) << " placed on coordinates: ";
+    QString temp;
+    for (int f = 0; f < signed(tempCoordinates.size()); f++){
+        temp.append(tempCoordinates[f]);
+        temp.append(" ");
+    }
+    qDebug() << temp;
+
+    //Change grid color;
+    for(int x = 0; x < signed(coordinates.size()); x++){
+        playerCells[cf.convertCellr2Index(coordinates[x])]->setStyleSheet("background-color: black");
+    }
 
 }
 
@@ -91,7 +178,7 @@ void MainWindow::on_btnPlay_clicked() { // Play button
 */
 
     for(int i = 0; i < 100; i++){
-        playerCells[i]->setStyleSheet("");
+        //playerCells[i]->setStyleSheet("");
         enemyCells[i]->setEnabled(true);
         enemyCells[i]->setStyleSheet("");
         enemyCells[i]->setVisible(true);
@@ -428,10 +515,12 @@ ui->btnEnterShip->setEnabled(false);
 
 void MainWindow::on_rbtnHorizontal_clicked() {
     ui->btnEnterShip->setEnabled(true);
+    direction = 'D';
 }
 
 void MainWindow::on_rbtnVertical_clicked() {
     ui->btnEnterShip->setEnabled(true);
+    direction = 'R';
 }
 
 //Add the cells to the Player Grid
@@ -555,10 +644,10 @@ void MainWindow::gamePlay(){
                     enemyCells[cnt]->setStyleSheet("background-color: red");
                 }
                 else if (result == "2"){	//Ship was hit and sunk
-                    //shipName = temp.substr(1, temp.size() - 1);
                     shipName = temp.mid(1, temp.size() - 1); //QT way
                     qDebug() << attack << " was a hit! " << shipName << " was sunk!";
                     enemyCells[cnt]->setStyleSheet("background-color: red");
+                    qDebug() << "Enemy ships left: " + QString::number(enemy.getShipsAlive());
                 }
                 if (enemy.getShipsAlive() == 0){	//Other play no longer has any afloat ships
                     gameOver = true;	//Set GameOver to true to break out of while loop
@@ -583,21 +672,24 @@ void MainWindow::gamePlay(){
                 temp = player.checkAttack(attack);
                 //result = temp.substr(0, 1);
                 result = temp.mid(0, 1); //QT way
-                qDebug() << "Enemy Result" + result;
+                qDebug() << "Cell: " + attack + "   Enemy Result" + result + "  Index: " + QString::number(index);
                 //Tell the player what the result of his/her attack was
                 if (result == "0"){	//Miss
                     qDebug() << attack << " was a miss.";
-                    playerCells[index]->setStyleSheet("background-color: grey");
+                    playerCells[index]->setStyleSheet("background-color: blue");
+                    aiAttack.moveResult(false, false, 0);
                 }
                 else if (result == "1"){	//Ship was hit
                     qDebug() << attack << " was a hit!";
                     playerCells[index]->setStyleSheet("background-color: red");
+                    aiAttack.moveResult(true, false, 0);
                 }
                 else if (result == "2"){	//Ship was hit and sunk
-                    //shipName = temp.substr(1, temp.size() - 1);
                     shipName = temp.mid(1, temp.size() - 1); //QT way
                     qDebug() << attack << " was a hit! " << shipName << " was sunk!";
                     playerCells[index]->setStyleSheet("background-color: red");
+                    aiAttack.moveResult(true, true, cf.shipName2Size(shipName));
+                    qDebug() << "Player ships left: " + QString::number(player.getShipsAlive());
                 }
                 if (player.getShipsAlive() == 0){	//Other play no longer has any afloat ships
                     gameOver = true;	//Set GameOver to true to break out of while loop
@@ -608,8 +700,197 @@ void MainWindow::gamePlay(){
             }
 
             if(gameOver){
-                 //qDebug() << players[playerTurn].getName() << " won! Game Over.";
+                 ui->playerGrid->setEnabled(false);
+                 ui->enemyGrid->setEnabled(false);
+
+                 QMessageBox msgBox;
+                 if(playerTurn == false){
+                     msgBox.setText("Game Over! Player Won");
+                 } else{
+                     msgBox.setText("Game Over! You Lost! AI is a beast!");
+                 }
+                 msgBox.exec();
+
+
             }
         //}
     }
+}
+
+Ship MainWindow::fillShip(QString shipName, QString coordinate, QChar direction){
+    Ship ship;
+    vector<QString> tempCoordinates;
+    QString temp;
+    int shipSize = cf.shipName2Size(shipName) - 1;	//Minus 1 because the first coordinate has already been choosen.
+
+    //Based on the name of the ship, deduce the size of the ship and the index of the ship
+    tempCoordinates.push_back(coordinate);
+    for (int i = 0; i < shipSize; i++){
+        temp = nextPosition(direction, tempCoordinates.at(tempCoordinates.size() - 1));
+        if (temp == "Out"){
+            ship.setBadPlacement(true);	//Next coordinate was off the grid.
+            return ship;	//Return a ship with badPlacement boolean set to true.
+        }
+        else{
+            tempCoordinates.push_back(temp);
+        }
+    }
+    //Assign coordinates to the ship
+    ship.createShip(shipSize, tempCoordinates);
+
+    return ship;
+}
+
+QString MainWindow::nextPosition(QChar direction, QString lastHit){
+    QString nextPos;
+    int temp = 0;   //Only needed for debugging. After code works can combine two lines into one in the switch statement.
+    //Break last hit apart into a row and column QStrings
+    //QString row = lastHit.substr(0, 1); //Letter
+    //QString column = lastHit.substr(1, lastHit.size());  //Number
+    QString row = lastHit.mid(0, 1); //Letter QT way
+    QString column = lastHit.mid(1, lastHit.size()); //Number QT way
+
+
+    switch (direction.toLatin1()){
+    case 'U':{
+        //Move up one, manipulating the letter... Ex: C5 => B5
+        if (cf.strLetter2Num(row) == 0) //Row A (Top of grid))
+            return "Out";
+        else{
+            temp = cf.strLetter2Num(row) - 1;
+            row = cf.num2StrLetter(temp);
+        }
+        break;
+    }
+    case 'D':{
+        //Move down one, manipulating the letter... Ex: C5 => D5
+        if (cf.strLetter2Num(row) == 9) //Row J (Bottom of grid))
+            return "Out";
+        else{
+            temp = cf.strLetter2Num(row) + 1;
+            row = cf.num2StrLetter(temp);
+        }
+        break;
+    }
+    case 'L':{
+        //Move left one, manipulating the number... Ex: C5 => C4
+        if (cf.strNum2Num(column) == 1) //Column 1 (Left of grid)
+            return "Out";
+        else{
+            temp = cf.strNum2Num(column) - 1;
+            column = cf.intNum2StrNum(temp);
+        }
+        break;
+    }
+    case 'R':{
+        //Move right one, manipulating the number... Ex: C5 => C6
+        if (cf.strNum2Num(column) == 10) //Column 10 (Right of grid)
+            return "Out";
+        else{
+            temp = cf.strNum2Num(column) + 1;
+            column = cf.intNum2StrNum(temp);
+        }
+        break;
+    }
+    }
+
+    nextPos += row;
+    nextPos += column;
+
+    return nextPos;
+}
+
+
+
+//Setup MenuBar for the mainwindow
+void MainWindow::setupMenu(){
+    //menu = new QMenuBar();
+    createMenuActions();
+    createMenus();
+
+}
+//Create the actions for the items in the menu
+void MainWindow::createMenuActions(){
+    newAct = new QAction(tr("&New"), this);
+    newAct->setShortcuts(QKeySequence::New);
+    newAct->setStatusTip(tr("Create a new Game"));
+    connect(newAct, &QAction::triggered, this, &MainWindow::newGame);
+
+    loadAct = new QAction(tr("&Load"), this);
+    loadAct->setShortcut(tr("Ctrl+L"));
+    loadAct->setStatusTip(tr("Load a previous Game"));
+    connect(loadAct, &QAction::triggered, this, &MainWindow::loadGame);
+
+    aboutAct = new QAction(tr("&About"), this);
+    loadAct->setShortcut(tr("Ctrl+A"));
+    aboutAct->setStatusTip(tr("About the creation of BattleShip CIS17B"));
+    connect(aboutAct, &QAction::triggered, this, &MainWindow::aboutScreen);
+
+
+    helpAct = new QAction(tr("&Help"), this);
+    helpAct->setStatusTip(tr("Help playing the Game"));
+    connect(helpAct, &QAction::triggered, this, &MainWindow::helpScreen);
+
+    loginAct = new QAction(tr("&Login"), this);
+    loadAct->setShortcut(tr("Ctrl+H"));
+    loginAct->setStatusTip(tr("Login Screen"));
+    connect(loginAct, &QAction::triggered, this, &MainWindow::loginScreen);
+
+    resetAct = new QAction(tr("&Reset"), this);
+    resetAct->setStatusTip(tr("Reset Ships"));
+    loadAct->setShortcut(tr("Ctrl+R"));
+    connect(resetAct, &QAction::triggered, this, &MainWindow::resetShips);
+}
+//Add the items to the menu
+void MainWindow::createMenus(){
+
+    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(newAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(loadAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(loginAct);
+
+    editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(resetAct);
+
+    helpMenu = menuBar()->addMenu(tr("&Help"));
+    helpMenu->addAction(aboutAct);
+    helpMenu->addAction(helpAct);
+
+}
+//Open New Game QDialog and start new ship placement
+void MainWindow::newGame(){
+
+}
+//Open Load Game QDialog and load a game from the database
+void MainWindow::loadGame(){
+
+}
+//Open the about MessageBox
+void MainWindow::aboutScreen(){
+
+}
+//Open the Help Screen QDialog
+void MainWindow::helpScreen(){
+
+}
+//Open the login QDialog
+void MainWindow::loginScreen(){
+    /*logmenu lm = new logmenu();
+    if(logmenu.exec() == QDialog::accepted()){
+        userName = logmenu->getUser();
+        password = logmenu->getPass();
+    }
+
+    if(debugging){
+        qDebug << "UserName: " + userName;
+        qDebug << "Password: " + password;
+    }*/
+
+
+}
+//Reset the currently placed ships
+void MainWindow::resetShips(){
+    //Should only work while setting up ships, not when the game as started.
 }
