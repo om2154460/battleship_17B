@@ -133,7 +133,7 @@ void MainWindow::on_btnEnterShip_clicked() { // 1 at a time
 /////////////////////////// FILL SHIP COORDINATE ARRAYS -> ///////////////////////
 overlap = false;
 
-QVector<QString> tempCoordinates;
+vector<QString> tempCoordinates;
 Ship tempShip;
 
     if(numDrops == 1) {
@@ -154,9 +154,12 @@ Ship tempShip;
 
         coordTestVec.push_back(patrol[0]);
         coordTestVec.push_back(patrol[1]);
+        tempCoordinates.push_back(cf.convertIndex2Cell(patrol[0]));
+        tempCoordinates.push_back(cf.convertIndex2Cell(patrol[1]));
 
-        //tempShip.createShip(coordTestVec);
-        //player.setShip(cf.shipName2Size(cf.index2ShipName(4)), tempShip.getCoordinates(), cf.index2ShipName(4));
+        tempShip.createShip(tempCoordinates);
+        int size = cf.shipName2Size(cf.index2ShipName(4));
+        player.setShip(size, tempCoordinates, cf.index2ShipName(4));
 
 
     }
@@ -191,10 +194,10 @@ Ship tempShip;
             coordTestVec.push_back(destroyer[1]);
             coordTestVec.push_back(destroyer[2]);
 
-           // tempCoordinates.push_back(destroyer[0]);
-            //tempCoordinates.push_back(destroyer[1]);
-            //tempCoordinates.push_back(destroyer[2]);
-            //player.setShip(cf.shipName2Size(cf.index2ShipName(3)), tempCoordinates[i].getCoordinates(), cf.index2ShipName(3));
+            tempCoordinates.push_back(cf.convertIndex2Cell(destroyer[0]));
+            tempCoordinates.push_back(cf.convertIndex2Cell(destroyer[1]));
+            tempCoordinates.push_back(cf.convertIndex2Cell(destroyer[2]));
+            player.setShip(cf.shipName2Size(cf.index2ShipName(3)), tempCoordinates, cf.index2ShipName(3));
 
 
 
@@ -232,6 +235,10 @@ Ship tempShip;
             coordTestVec.push_back(submarine[0]);
             coordTestVec.push_back(submarine[1]);
             coordTestVec.push_back(submarine[2]);
+            tempCoordinates.push_back(cf.convertIndex2Cell(submarine[0]));
+            tempCoordinates.push_back(cf.convertIndex2Cell(submarine[1]));
+            tempCoordinates.push_back(cf.convertIndex2Cell(submarine[2]));
+            player.setShip(cf.shipName2Size(cf.index2ShipName(2)), tempCoordinates, cf.index2ShipName(2));
 
         }
 
@@ -275,6 +282,11 @@ if(overlap == false) {
         coordTestVec.push_back(battleship[1]);
         coordTestVec.push_back(battleship[2]);
         coordTestVec.push_back(battleship[3]);
+        tempCoordinates.push_back(cf.convertIndex2Cell(battleship[0]));
+        tempCoordinates.push_back(cf.convertIndex2Cell(battleship[1]));
+        tempCoordinates.push_back(cf.convertIndex2Cell(battleship[2]));
+        tempCoordinates.push_back(cf.convertIndex2Cell(battleship[3]));
+        player.setShip(cf.shipName2Size(cf.index2ShipName(1)), tempCoordinates, cf.index2ShipName(1));
 
     }
 
@@ -329,7 +341,12 @@ if(overlap == false) {
         coordTestVec.push_back(aircraftCarrier[3]);
         coordTestVec.push_back(aircraftCarrier[4]);
 
-        //player.setShip(cf.shipName2Size(cf.index2ShipName(5)), coordTestVec[i].getCoordinates(), cf.index2ShipName(5));
+        tempCoordinates.push_back(cf.convertIndex2Cell(aircraftCarrier[0]));
+        tempCoordinates.push_back(cf.convertIndex2Cell(aircraftCarrier[1]));
+        tempCoordinates.push_back(cf.convertIndex2Cell(aircraftCarrier[2]));
+        tempCoordinates.push_back(cf.convertIndex2Cell(aircraftCarrier[3]));
+        tempCoordinates.push_back(cf.convertIndex2Cell(aircraftCarrier[4]));
+        player.setShip(cf.shipName2Size(cf.index2ShipName(0)), tempCoordinates, cf.index2ShipName(0));
     }
 
 }

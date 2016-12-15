@@ -19,14 +19,16 @@ SOURCES += main.cpp\
     ai_ship_placer.cpp \
     ship.cpp \
     player.cpp \
-    database.cpp
+    database.cpp \
+    logmenu.cpp
 
 HEADERS  += mainwindow.h \
     conversionfunctions.h \
     ai_ship_placer.h \
     ship.h \
     player.h \
-    database.h
+    database.h \
+    logmenu.h
 
 FORMS    += mainwindow.ui \
     game.ui

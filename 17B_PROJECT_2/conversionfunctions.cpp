@@ -154,3 +154,43 @@ int ConversionFunctions::convertCellr2Index(QString coordinate){
 
     return index;
 }
+int ConversionFunctions::shipName2Index(QString name){
+    if (name == "CARRIER")	//Size 5
+        return 0;
+    if (name == "BATTLESHIP")	//Size 4
+        return 1;
+    if (name == "CRUISER")	//Size 3
+        return 2;
+    if (name == "SUBMARINE")	//Size 3
+        return 3;
+    if (name == "DESTROYER")	//Size 2
+        return 4;
+
+    return 99;   //Only needed so compiler doesn't throw a fit...
+}
+//Convert a indexed number into a ship name
+QString ConversionFunctions::index2ShipName(int index){
+    switch (index){
+    case 0:	return "CARRIER";
+    case 1:	return "BATTLESHIP";
+    case 2:	return "CRUISER";
+    case 3:	return "SUBMARINE";
+    case 4:	return "DESTROYER";
+    }
+    return "Wrong Index Given";   //Only needed so compiler doesn't throw a fit...
+}
+//Convert a ship name into a size
+int ConversionFunctions::shipName2Size(QString name){
+    if (name == "CARRIER")	//Size 5
+        return 5;
+    if (name == "BATTLESHIP")	//Size 4
+        return 4;
+    if (name == "CRUISER")	//Size 3
+        return 3;
+    if (name == "SUBMARINE")	//Size 3
+        return 3;
+    if (name == "DESTROYER")	//Size 2
+        return 2;
+
+    return 99;  //Only needed so compiler doesn't throw a fit...
+}
