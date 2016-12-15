@@ -1,9 +1,11 @@
+#include "mainwindow.h"
 #include "logmenu.h"
 #include "ui_logmenu.h"
 #include <QMessageBox>
 #include <QString>
 #include <QPixmap>
 #include <QPalette>
+#include "database.h"
 
 logmenu::logmenu(QWidget *parent) :
     QDialog(parent),
@@ -17,6 +19,8 @@ logmenu::logmenu(QWidget *parent) :
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
     this->setPalette(palette);
+
+    //ui->enter->
 }
 
 logmenu::~logmenu()
@@ -32,17 +36,24 @@ void logmenu::on_quit_clicked()
 
 void logmenu::on_enter_clicked()
 {
-    QString userline = ui->userline->text();
-    QString passline = ui->passline->text();
+    QString username;
+    QString password;
+    username = ui->userline->text();
+    password = ui->passline->text();
 
-    if(userline == "test" && passline == "test")
+    user = username;
+    pass = password;
+
+    /*if(username == "test" && password == "test")
     {
         QMessageBox::information(this, "Login", "Username and password is correct");
     }
         else
     {
         QMessageBox::warning(this, "Login", "Login is incorrect");
-    }
+    }*/
+
+    this->close();
 
 }
 

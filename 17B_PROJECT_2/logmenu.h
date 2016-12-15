@@ -18,6 +18,12 @@ public:
     explicit logmenu(QWidget *parent = 0);
     ~logmenu();
 
+    QString getUser(){return user;}
+    QString getPass(){return pass;}
+
+    QString user;
+    QString pass;
+
 private slots:
 
     void on_quit_clicked();
