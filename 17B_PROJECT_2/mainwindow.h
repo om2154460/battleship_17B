@@ -5,6 +5,9 @@
 #include <QPushButton>
 #include <vector>
 #include <QVector>
+#include "ship.h"
+#include "player.h"
+#include "conversionfunctions.h"
 
 namespace Ui {
 class MainWindow;
@@ -47,8 +50,18 @@ private:
     bool overlap;
     QPushButton * playerCells[100];
     QPushButton * enemyCells[100];
+    ConversionFunctions cf;
+
     void createPlayerGrid();
     void createEnemyGrid();
+
+    QVector<Ship> enemyShips;
+
+    Player player;
+    Player enemy;
+
+    bool debugging;
+
 };
 
 #endif // MAINWINDOW_H

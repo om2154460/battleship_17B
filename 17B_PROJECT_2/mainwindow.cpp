@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ai_ship_placer.h"
 
 #include <QStyle>
 #include <QPixmap>
@@ -36,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createPlayerGrid();
     createEnemyGrid();
+
+    debugging = true;
 
 }
 
@@ -85,6 +88,29 @@ void MainWindow::on_btnPlay_clicked() { // Play button
     qDebug() << aircraftCarrier[0] << " " << aircraftCarrier[1] << " " << aircraftCarrier[2] << " " << aircraftCarrier[3] << " " << aircraftCarrier[4];
 */
 
+    for(int i = 0; i < 100; i++){
+        playerCells[i]->setStyleSheet("");
+        enemyCells[i]->setEnabled(true);
+        enemyCells[i]->setStyleSheet("");
+        enemyCells[i]->setVisible(true);
+    }
+
+ui->btnPlay->setVisible(false);
+ui->btnReset->setVisible(false);
+ui->btnEnterShip->setVisible(false);
+ui->rbtnHorizontal->setVisible(false);
+ui->rbtnVertical->setVisible(false);
+ui->label->setVisible(false);
+ui->label_2->setVisible(false);
+ui->label_4->setVisible(true);
+
+
+
+
+
+
+    AIShipPlacement();
+
 }
 
 void MainWindow::on_btnReset_clicked() { // Reset button
@@ -107,6 +133,9 @@ void MainWindow::on_btnEnterShip_clicked() { // 1 at a time
 /////////////////////////// FILL SHIP COORDINATE ARRAYS -> ///////////////////////
 overlap = false;
 
+QVector<QString> tempCoordinates;
+Ship tempShip;
+
     if(numDrops == 1) {
 
          patrol[0] = firstCoordArr[0];
@@ -125,6 +154,10 @@ overlap = false;
 
         coordTestVec.push_back(patrol[0]);
         coordTestVec.push_back(patrol[1]);
+
+        //tempShip.createShip(coordTestVec);
+        //player.setShip(cf.shipName2Size(cf.index2ShipName(4)), tempShip.getCoordinates(), cf.index2ShipName(4));
+
 
     }
 
@@ -157,6 +190,11 @@ overlap = false;
             coordTestVec.push_back(destroyer[0]);
             coordTestVec.push_back(destroyer[1]);
             coordTestVec.push_back(destroyer[2]);
+
+           // tempCoordinates.push_back(destroyer[0]);
+            //tempCoordinates.push_back(destroyer[1]);
+            //tempCoordinates.push_back(destroyer[2]);
+            //player.setShip(cf.shipName2Size(cf.index2ShipName(3)), tempCoordinates[i].getCoordinates(), cf.index2ShipName(3));
 
 
 
@@ -290,6 +328,8 @@ if(overlap == false) {
         coordTestVec.push_back(aircraftCarrier[2]);
         coordTestVec.push_back(aircraftCarrier[3]);
         coordTestVec.push_back(aircraftCarrier[4]);
+
+        //player.setShip(cf.shipName2Size(cf.index2ShipName(5)), coordTestVec[i].getCoordinates(), cf.index2ShipName(5));
     }
 
 }
@@ -319,16 +359,16 @@ if(overlap == true) {
     }
 
     if(numDrops == 1) {
-        ui->label_2->setText("Click Destroyer Coordinate (3)");
+        ui->label_2->setText("Click Submarine Coordinate (3)");
     }
     else if(numDrops == 2) {
-        ui->label_2->setText("Click Submarine Coordinate (3)");
+        ui->label_2->setText("Click Cruiser Coordinate (3)");
     }
     else if(numDrops == 3) {
         ui->label_2->setText("Click Battleship Coordinate (4)");
     }
     else if(numDrops == 4) {
-        ui->label_2->setText("Click Aircraft Carrier Coordinate (5)");
+        ui->label_2->setText("Click Carrier Coordinate (5)");
     }
     else if(numDrops == 5) {
         ui->label_2->setText("Ships Have Been Set");
@@ -342,6 +382,23 @@ if(overlap == true) {
     if(numDrops>=5) {
         ui->btnPlay->setEnabled(true);
         ui->label->setVisible(true);
+
+        /*for (int i = 0; i < 5; i++){
+            player.setShip(cf.shipName2Size(cf.index2ShipName(i)), tempShips[i].getCoordinates(), cf.index2ShipName(i));
+            if (debugging){
+                vector<QString> tempCoordinates = tempShips[i].getCoordinates();
+                qDebug() << "AI placed " << cf.index2ShipName(i) << " at: ";
+                QString temp;
+                for (int x = 0; x < signed(tempShips[i].getSize()); x++){
+                    temp.append(tempCoordinates[x]);
+                    temp.append(" ");
+                }
+                qDebug() << temp;
+            }
+        }*/
+
+
+
     }
 ui->btnEnterShip->setEnabled(false);
 
@@ -403,6 +460,7 @@ void MainWindow::createEnemyGrid(){
             enemyCells[index]->setFixedSize(35, 35);
             //Add the QPushButton to the GridLayout
             ui->enemyGrid->addWidget(enemyCells[(row*10)+col],row,col);
+            enemyCells[index]->setVisible(false);
             //Connect the QPushButton's released signal to the handleButton function
             //QObject::connect(enemyCells[index],SIGNAL(released()),this,SLOT(handleButton()));
         }
@@ -421,7 +479,25 @@ void MainWindow::createEnemyGrid(){
 }
 
 void MainWindow::AIShipPlacement(){
+    AI_Ship_Placer placeAIShips;
+    vector<Ship> tempShips;
 
+    //Use the AI_Ship_Placer class to create ships with valid coordinates.
+    tempShips = placeAIShips.setShips3();
+    //Assign the created ships to the Player 2 Ships (Computer)
+    for (int i = 0; i < 5; i++){
+        enemy.setShip(cf.shipName2Size(cf.index2ShipName(i)), tempShips[i].getCoordinates(), cf.index2ShipName(i));
+        if (debugging){
+            vector<QString> tempCoordinates = tempShips[i].getCoordinates();
+            qDebug() << "AI placed " << cf.index2ShipName(i) << " at: ";
+            QString temp;
+            for (int x = 0; x < signed(tempShips[i].getSize()); x++){
+                temp.append(tempCoordinates[x]);
+                temp.append(" ");
+            }
+            qDebug() << temp;
+        }
+    }
 }
 
 
