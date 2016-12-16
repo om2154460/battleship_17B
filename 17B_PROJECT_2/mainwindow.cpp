@@ -54,6 +54,8 @@ MainWindow::MainWindow(QWidget *parent) :
     playerTurn = false;
     debugging = true;
     loggedIn = false;
+    shipsPlaced = false;
+    hold = true;
 
     //Setup menuBar
     setupMenu();
@@ -62,70 +64,76 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::handleButton(){
 
-    QString coordinate;
-    char direct;
-
-    vector<Ship> ships;
-    Ship tempShip;
-
-
-    ((QPushButton*)sender())->setStyleSheet("background-color: black");
-    numDrops++;
-
-    int index=0;
-    while(playerCells[index]->objectName() != ((QPushButton*)sender())->objectName()) {
-        index++;
-    }
-    coordinate = cf.convertIndex2Cell(index);
-    direct = direction;
+    if(!hold){
+        QString coordinate;
+        char direct;
+        vector<Ship> ships;
+        Ship tempShip;
 
 
-    //Fill a temporay ship instance
-    tempShip = fillShip(cf.index2ShipName(drops), coordinate, direct);
-    //Check that the ship was placed okay
-    if (tempShip.getBadPlacement()){
-        qDebug() << "Placement of the " << cf.index2ShipName(drops) << " was off the grid. Try again!";
-        return;	//Ship placement was bad, go back to the asking the player for new coordinates.
-    }
-    //Get the coordinates of the temporary ship to be checked for collision with other ships that have been placed.
-    vector<QString> tempCoordinates = tempShip.getCoordinates();
-    //Varibales to be used for the comparison code. May be put into a function.
-    std::vector<QString>::iterator it;
-    //Check the ship to be placed will be on top of another other.
-    if (coordinates.size() > 0){
-        for (int w = 0; w < signed(tempCoordinates.size()); w++){
-            it = std::find(coordinates.begin() + w, coordinates.end(), tempCoordinates.at(w));
-            if (it != coordinates.end()){	//A coordinate of the temporary Ship has matched a coordinate from another ship.
-                qDebug() << "Placement of the " + cf.index2ShipName(drops) + " was on top of another ship. Try again!";
-                return;
+        //((QPushButton*)sender())->setStyleSheet("background-color: black");
+        //numDrops++;
+
+        int index=0;
+        while(playerCells[index]->objectName() != ((QPushButton*)sender())->objectName()) {
+            index++;
+        }
+        coordinate = cf.convertIndex2Cell(index);
+        direct = direction;
+
+
+        //Fill a temporay ship instance
+        QString name = cf.index2ShipName(drops);    //For debugging
+        tempShip = fillShip(name, coordinate, direct);
+        //Check that the ship was placed okay
+        if (tempShip.getBadPlacement()){
+            qDebug() << "Placement of the " << cf.index2ShipName(drops) << " was off the grid. Try again!";
+            return;	//Ship placement was bad, go back to the asking the player for new coordinates.
+        }
+        //Get the coordinates of the temporary ship to be checked for collision with other ships that have been placed.
+        vector<QString> tempCoordinates = tempShip.getCoordinates();
+        //Varibales to be used for the comparison code. May be put into a function.
+        std::vector<QString>::iterator it;
+        //Check the ship to be placed will be on top of another other.
+        if (coordinates.size() > 0){
+            for (int w = 0; w < signed(tempCoordinates.size()); w++){
+                it = std::find(coordinates.begin() + w, coordinates.end(), tempCoordinates.at(w));
+                if (it != coordinates.end()){	//A coordinate of the temporary Ship has matched a coordinate from another ship.
+                    qDebug() << "Placement of the " + cf.index2ShipName(drops) + " was on top of another ship. Try again!";
+                    return;
+                }
             }
         }
-    }
 
-    //Add coordinates of the temporary ship the the coordinate vector for comparing.
-    for (int j = 0; j < signed(tempCoordinates.size()); j++){
-        coordinates.push_back(tempCoordinates[j]);
-    }
-    //Fill the player's ship with the temporary ship cooprdinates.
-    //player.setShip(cf.shipName2Size(cf.index2ShipName(drops)), tempShip.getCoordinates(), cf.index2ShipName(drops));
-    drops++;
-    if(debugging){
-        //Display where the Ship was placed
-        qDebug() << cf.index2ShipName(drops) << " placed on coordinates: ";
-        QString temp;
-        for (int f = 0; f < signed(tempCoordinates.size()); f++){
-            temp.append(tempCoordinates[f]);
-            temp.append(" ");
+        //Add coordinates of the temporary ship the the coordinate vector for comparing.
+        for (int j = 0; j < signed(tempCoordinates.size()); j++){
+            coordinates.push_back(tempCoordinates[j]);
         }
-        qDebug() << temp;
+        //Fill the player's ship with the temporary ship cooprdinates.
+        //player.setShip(cf.shipName2Size(cf.index2ShipName(drops)), tempShip.getCoordinates(), cf.index2ShipName(drops));
+        if(debugging){
+            //Display where the Ship was placed
+            QString name = cf.index2ShipName(drops);
+            qDebug() << name << " placed on coordinates: ";
+            QString temp;
+            for (int f = 0; f < signed(tempCoordinates.size()); f++){
+                temp.append(tempCoordinates[f]);
+                temp.append(" ");
+            }
+            qDebug() << temp;
+        }
+
+        //Change grid color;
+        for(int x = 0; x < signed(tempCoordinates.size()); x++){
+            int tempInt = cf.convertCellr2Index(tempCoordinates[x]);
+            playerCells[tempInt]->setStyleSheet("background-color: black");
+        }
+        //Hold the index for saving the ship
+        holdIndex = index;
+        //Place a hold on placing any other ships;
+        hold = true;
     }
 
-    //Change grid color;
-    for(int x = 0; x < signed(coordinates.size()); x++){
-        playerCells[cf.convertCellr2Index(coordinates[x])]->setStyleSheet("background-color: black");
-    }
-    //Hold the index for saving the ship
-    holdIndex = index;
 
 }
 
@@ -169,7 +177,7 @@ void MainWindow::on_btnPlay_clicked() { // Play button
 
     for(int i = 0; i < 100; i++){
         enemyCells[i]->setEnabled(true);
-        enemyCells[i]->setStyleSheet("");
+        enemyCells[i]->setStyleSheet("background-color : grey");
     }
 
     ui->btnPlay->setVisible(false);
@@ -209,7 +217,12 @@ void MainWindow::on_btnReset_clicked() { // Reset button
 
 }
 
-void MainWindow::on_btnEnterShip_clicked() { // 1 at a time
+void MainWindow::on_btnEnterShip_clicked(){
+    addShip();
+    hold = false;
+}
+/*
+void on_btnEnterShip_clicked2() { // 1 at a time
 /////////////////////////// FILL SHIP COORDINATE ARRAYS -> ///////////////////////
 overlap = false;
 
@@ -492,7 +505,7 @@ if(overlap == true) {
                 }
                 qDebug() << temp;
             }
-        }*/
+        }
 
 
 
@@ -500,15 +513,17 @@ if(overlap == true) {
 ui->btnEnterShip->setEnabled(false);
 
 }
-
+*/
 void MainWindow::on_rbtnHorizontal_clicked() {
     ui->btnEnterShip->setEnabled(true);
-    direction = 'D';
+    direction = 'R';
+    hold = false;
 }
 
 void MainWindow::on_rbtnVertical_clicked() {
     ui->btnEnterShip->setEnabled(true);
-    direction = 'R';
+    direction = 'D';
+    hold = false;
 }
 
 //Add the cells to the Player Grid
@@ -527,7 +542,7 @@ void MainWindow::createPlayerGrid(){
             //Add the QPushButton to the GridLayout
             ui->playerGrid->addWidget(playerCells[(row*10)+col],row,col);
             //Connect the QPushButton's released signal to the handleButton function
-            QObject::connect(playerCells[index],SIGNAL(released()),this,SLOT(handlePlayerButton()));
+            QObject::connect(playerCells[index],SIGNAL(released()),this,SLOT(handleButton()));
         }
     }
 
@@ -644,7 +659,7 @@ void MainWindow::AIShipPlacement(){
         }
     }
 }
-
+//Game Logic
 void MainWindow::gamePlay(){
     if(time2Play){
         bool attackOK;
@@ -750,16 +765,17 @@ void MainWindow::gamePlay(){
         //}
     }
 }
-
+//Return a filled ship based on ship name, starting coordiante, and direction
 Ship MainWindow::fillShip(QString shipName, QString coordinate, QChar direction){
     Ship ship;
     vector<QString> tempCoordinates;
     QString temp;
-    int shipSize = cf.shipName2Size(shipName) - 1;	//Minus 1 because the first coordinate has already been choosen.
+    int shipSize = cf.shipName2Size(shipName);
 
-    //Based on the name of the ship, deduce the size of the ship and the index of the ship
+    //Based on the name of the ship, deduce the size of the ship and the index of the ship  
     tempCoordinates.push_back(coordinate);
-    for (int i = 0; i < shipSize; i++){
+    //Minus 1 because the first coordinate has already been choosen.
+    for (int i = 0; i < shipSize - 1; i++){
         temp = nextPosition(direction, tempCoordinates.at(tempCoordinates.size() - 1));
         if (temp == "Out"){
             ship.setBadPlacement(true);	//Next coordinate was off the grid.
@@ -774,7 +790,7 @@ Ship MainWindow::fillShip(QString shipName, QString coordinate, QChar direction)
 
     return ship;
 }
-
+//Get the next coordinate position based on direction
 QString MainWindow::nextPosition(QChar direction, QString lastHit){
     QString nextPos;
     int temp = 0;   //Only needed for debugging. After code works can combine two lines into one in the switch statement.
@@ -833,15 +849,11 @@ QString MainWindow::nextPosition(QChar direction, QString lastHit){
 
     return nextPos;
 }
-
-
-
 //Setup MenuBar for the mainwindow
 void MainWindow::setupMenu(){
     //menu = new QMenuBar();
     createMenuActions();
     createMenus();
-
 }
 //Create the actions for the items in the menu
 void MainWindow::createMenuActions(){
@@ -902,18 +914,33 @@ void MainWindow::newGame(){
         playerCells[i]->setStyleSheet("background-color: grey");
         enemyCells[i]->setStyleSheet("background-color: grey");
     }
+    //Make placement buttons visible again
+    ui->btnPlay->setVisible(false);
+    ui->btnReset->setVisible(false);
+    ui->btnEnterShip->setVisible(false);
+    ui->rbtnHorizontal->setVisible(false);
+    ui->rbtnVertical->setVisible(false);
 }
 //Open Load Game QDialog and load a game from the database
 void MainWindow::loadGame(){
+    QMessageBox msgBox;
+    msgBox.setText("Load Game not setup...");
+    msgBox.exec();
 
+    //Need code for displaying games to choose from
+    //Then need to ad code for repopulating ships and grid.
 }
 //Open the about MessageBox
 void MainWindow::aboutScreen(){
-
+    QMessageBox msgBox;
+    msgBox.setText("About QDialog not setup...");
+    msgBox.exec();
 }
 //Open the Help Screen QDialog
 void MainWindow::helpScreen(){
-
+    QMessageBox msgBox;
+    msgBox.setText("Help QDialog not setup...");
+    msgBox.exec();
 }
 //Open the login QDialog
 void MainWindow::loginScreen(){
@@ -938,6 +965,8 @@ void MainWindow::loginScreen(){
         qDebug() << "Password: " + password;
     }
 
+    //Need to add code to
+
 
 }
 //Reset the currently placed ships
@@ -954,6 +983,7 @@ void MainWindow::resetShips(){
     }
     //Clear holdIndex
     holdIndex = 0;
+    hold = false;
 
 }
 //Commit ship placement to the Player's ships
@@ -963,6 +993,12 @@ void MainWindow::addShip(){
         vector<QString> tempCoordinates;
         Ship tempShip;
         tempShip = fillShip(cf.index2ShipName(drops), cf.convertIndex2Cell(holdIndex), direction);
+        drops++;
+        hold = false;
+    }else{
+        //Clicking on the Player grid will no longer do anything
+        hold = true;
+        shipsPlaced = true;
     }
 
     holdIndex = 0;

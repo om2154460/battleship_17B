@@ -84,6 +84,8 @@ private:
     int holdIndex;
     char direction;
     int drops;
+    bool hold;
+    bool shipsPlaced;
 
     Player player;
     Player enemy;
