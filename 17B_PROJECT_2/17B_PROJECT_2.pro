@@ -12,6 +12,7 @@ TARGET = 17B_PROJECT_2
 TEMPLATE = app
 QT += widgets
 QT += sql
+QT += core
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -20,7 +21,8 @@ SOURCES += main.cpp\
     ship.cpp \
     player.cpp \
     database.cpp \
-    logmenu.cpp
+    logmenu.cpp \
+    ai_attack_algorithm.cpp
 
 HEADERS  += mainwindow.h \
     conversionfunctions.h \
@@ -28,7 +30,8 @@ HEADERS  += mainwindow.h \
     ship.h \
     player.h \
     database.h \
-    logmenu.h
+    logmenu.h \
+    ai_attack_algorithm.h
 
 FORMS    += mainwindow.ui \
-    game.ui
+    logmenu.ui

@@ -96,6 +96,7 @@ private:
 
     bool time2Play;
     bool playerTurn;
+    bool playerWon;
     bool debugging;
 
     void setupMenu();

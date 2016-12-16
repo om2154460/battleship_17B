@@ -150,7 +150,7 @@ int ConversionFunctions::convertCellr2Index(QString coordinate){
         }
     }
 
-    index += column.toInt();
+    index += column.toInt() - 1;
 
     return index;
 }

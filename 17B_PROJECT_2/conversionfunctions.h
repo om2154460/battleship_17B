@@ -15,6 +15,7 @@ public:
     int strNum2Num(QString num);
     QString num2StrLetter(int x);
     int strLetter2Num(QString letter);
+    QString index2Row(int index);
 };
 
 #endif // CONVERSIONFUNCTIONS_H
