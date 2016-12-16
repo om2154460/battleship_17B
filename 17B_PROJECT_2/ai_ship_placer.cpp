@@ -108,12 +108,14 @@ vector<Ship> AI_Ship_Placer::setShips2(){
             }
             //Fill the player's ship with the temporary ship cooprdinates.
             ships[i].createShip(tempCoordinates);
-            //Display where the Ship was placed
-            qDebug() << index2ShipName(i) << " placed on coordinates: ";
-            for (int f = 0; f < signed(tempCoordinates.size()); f++){
-                qDebug() << tempCoordinates[f] << " ";
+            if(debugging){
+                //Display where the Ship was placed
+                qDebug() << index2ShipName(i) << " placed on coordinates: ";
+                for (int f = 0; f < signed(tempCoordinates.size()); f++){
+                    qDebug() << tempCoordinates[f] << " ";
+                }
             }
-            qDebug() << endl;
+
 
             //Increase the iterator to go to next ship placement.
             i++;
