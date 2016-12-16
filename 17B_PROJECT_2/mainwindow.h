@@ -80,6 +80,8 @@ private:
 
     QVector<Ship> enemyShips;
     QVector<Ship> tempShips;
+     vector<QString> coordinates;
+    int holdIndex;
     char direction;
     int drops;
 
